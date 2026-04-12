@@ -278,7 +278,7 @@ const ALL_QUESTIONS=[
 ];
 
 let filteredQ=[…ALL_QUESTIONS],currentIndex=0,isFlipped=false,correctCount=0,wrongCount=0,answered=new Set();
-function setFilter(cat,btn){document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));btn.classList.add(‘active’);filteredQ=cat===‘all’?[…ALL_QUESTIONS]:ALL_QUESTIONS.filter(q=>q.category===cat);restartAll();}
+function setFilter(cat,btn){document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));btn.classList.add(‘active’);if(cat===‘wrong’){filteredQ=ALL_QUESTIONS.filter(q=>_wrongIds.has(q.id));}else if(cat===‘all’){filteredQ=[…ALL_QUESTIONS];}else{filteredQ=ALL_QUESTIONS.filter(q=>q.category===cat);}restartAll();}
 function shuffleArray(arr){for(let i=arr.length-1;i>0;i–){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}}
 function shuffleAndReset(){shuffleArray(filteredQ);currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
 function restartAll(){currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
@@ -295,7 +295,7 @@ isFlipped=false;document.getElementById(‘result-btns’).classList.remove(‘v
 updateStats();
 }
 function flipCard(){isFlipped=!isFlipped;document.getElementById(‘flashcard’).classList.toggle(‘flipped’,isFlipped);if(isFlipped)document.getElementById(‘result-btns’).classList.add(‘visible’);}
-function markResult(correct){if(!answered.has(currentIndex)){answered.add(currentIndex);if(correct){correctCount++;wrongIds.delete(filteredQ[currentIndex].id);}else{wrongCount++;wrongIds.add(filteredQ[currentIndex].id);}saveWrong();updateWrongBadge();}nextCard();}
+function markResult(correct){if(!answered.has(currentIndex)){answered.add(currentIndex);if(correct){correctCount++;_wrongIds.delete(filteredQ[currentIndex].id);}else{wrongCount++;_wrongIds.add(filteredQ[currentIndex].id);}try{localStorage.setItem(‘cf2w’,JSON.stringify([…_wrongIds]));}catch(e){}updateWrongBadge();}nextCard();}
 function nextCard(){if(currentIndex<filteredQ.length-1){currentIndex++;renderCard();}else showComplete();}
 function prevCard(){if(currentIndex>0){currentIndex–;renderCard();}}
 function updateStats(){
@@ -319,44 +319,10 @@ document.getElementById(‘complete-screen’).classList.add(‘visible’);
 updateStats();
 }
 function toggleTheme(){document.body.classList.toggle(‘light’);document.querySelector(’.theme-toggle’).textContent=document.body.classList.contains(‘light’)?‘🌙’:‘☀️’;}
-// ── 間違えた問題 機能 ──
-var WKEY=‘cf2w’;
-var wrongIds=(function(){try{return new Set(JSON.parse(localStorage.getItem(WKEY)||’[]’));}catch(e){return new Set();}})();
-function saveWrong(){localStorage.setItem(WKEY,JSON.stringify(Array.from(wrongIds)));}
-function updateWrongBadge(){
-var n=wrongIds.size;
-var el=document.getElementById(‘wrong-count-badge’);
-if(el)el.textContent=n;
-var btn=document.getElementById(‘clear-wrong-btn’);
-if(btn)btn.style.display=n>0?’’:‘none’;
-}
-function clearWrongList(){
-wrongIds.clear();saveWrong();updateWrongBadge();
-filteredQ=[…ALL_QUESTIONS];
-currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();
-document.getElementById(‘complete-screen’).classList.remove(‘visible’);
-document.getElementById(‘card-area’).style.display=’’;
-document.getElementById(‘result-btns’).classList.remove(‘visible’);
-var btns=document.querySelectorAll(’.filter-btn’);
-btns.forEach(function(b){b.classList.remove(‘active’);});
-var allBtn=document.getElementById(‘filter-all’);
-if(allBtn)allBtn.classList.add(‘active’);
+var _wrongIds=(function(){try{return new Set(JSON.parse(localStorage.getItem(‘cf2w’)||’[]’));}catch(e){return new Set();}})();
+function updateWrongBadge(){var n=_wrongIds.size;var el=document.getElementById(‘wrong-count-badge’);if(el)el.textContent=n;var btn=document.getElementById(‘clear-wrong-btn’);if(btn)btn.style.display=n>0?’’:‘none’;}
+function clearWrongList(){_wrongIds.clear();try{localStorage.removeItem(‘cf2w’);}catch(e){}updateWrongBadge();filteredQ=[…ALL_QUESTIONS];currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);document.querySelectorAll(’.filter-btn’).forEach(function(b){b.classList.remove(‘active’);});document.getElementById(‘filter-all’).classList.add(‘active’);renderCard();updateWrongBadge();}
 renderCard();updateWrongBadge();
-}
-// Patch setFilter to handle ‘wrong’
-var _origSetFilter=setFilter;
-setFilter=function(cat,btn){
-if(cat===‘wrong’){
-document.querySelectorAll(’.filter-btn’).forEach(function(b){b.classList.remove(‘active’);});
-btn.classList.add(‘active’);
-filteredQ=ALL_QUESTIONS.filter(function(q){return wrongIds.has(q.id);});
-restartAll();
-} else {
-_origSetFilter(cat,btn);
-}
-};
-renderCard();
-updateWrongBadge();
 </script>
 
 </body>
