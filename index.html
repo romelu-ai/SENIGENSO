@@ -277,6 +277,7 @@ const ALL_QUESTIONS=[
 {id:130,category:'ion',question:`Cu²⁺の水溶液の色を答えよ。`,answer:`青色`,explanation:`CuSO₄水溶液は青色。CuSO₄·5H₂O結晶も青色。`},
 ];
 
+let filteredQ=[…ALL_QUESTIONS],currentIndex=0,isFlipped=false,correctCount=0,wrongCount=0,answered=new Set();
 const WRONG_KEY=‘chem_flash2_wrong’;
 function loadWrongIds(){try{return new Set(JSON.parse(localStorage.getItem(WRONG_KEY)||’[]’));}catch(e){return new Set();}}
 function saveWrongIds(s){localStorage.setItem(WRONG_KEY,JSON.stringify([…s]));}
@@ -284,7 +285,7 @@ let wrongIds=loadWrongIds();
 let currentFilter=‘all’;
 function updateWrongBadge(){const cnt=wrongIds.size;const el=document.getElementById(‘wrong-count-badge’);if(el)el.textContent=cnt;const btn=document.getElementById(‘clear-wrong-btn’);if(btn)btn.style.display=cnt>0?’’:‘none’;}
 function clearWrongList(){if(!confirm(‘間違えリストをリセットしますか？’))return;wrongIds.clear();saveWrongIds(wrongIds);updateWrongBadge();if(currentFilter===‘wrong’){filteredQ=[];renderCard();}}
-let filteredQ=[…ALL_QUESTIONS],currentIndex=0,isFlipped=false,correctCount=0,wrongCount=0,answered=new Set();
+
 function setFilter(cat,btn){document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));btn.classList.add(‘active’);currentFilter=cat;if(cat===‘all’){filteredQ=[…ALL_QUESTIONS];}else if(cat===‘wrong’){filteredQ=ALL_QUESTIONS.filter(q=>wrongIds.has(q.id));}else{filteredQ=ALL_QUESTIONS.filter(q=>q.category===cat);}restartAll();}
 function shuffleArray(arr){for(let i=arr.length-1;i>0;i–){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}}
 function shuffleAndReset(){shuffleArray(filteredQ);currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
