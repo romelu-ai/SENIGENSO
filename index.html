@@ -79,20 +79,16 @@
   .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
   body.light{--bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e2e6f0;--text:#1a1d27;--text-sub:#6b7280;--shadow:0 8px 32px rgba(0,0,0,.1)}
   @media(max-width:480px){.card-face{padding:22px 18px}.btn{padding:9px 16px;font-size:.82rem}}
-
-#debug-box{position:fixed;bottom:0;left:0;right:0;background:#ff0044;color:#fff;font-size:11px;padding:4px 8px;z-index:9999;display:none;word-break:break-all;}
 </style>
-
 </head>
 <body>
-<div id="debug-box"></div>
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 <header>
   <h1>⚗ CHEMISTRY FLASH II</h1>
   <p>第3編 遷移元素・金属イオン分析 — 全130問</p>
 </header>
 <div class="filter-bar">
-  <button class="filter-btn active" data-cat="all" id="filter-all" onclick="setFilter('all',this)">すべて</button>
+  <button class="filter-btn active" data-cat="all" onclick="setFilter('all',this)">すべて</button>
   <button class="filter-btn" data-cat="fe" onclick="setFilter('fe',this)">Fe 鉄</button>
   <button class="filter-btn" data-cat="cu" onclick="setFilter('cu',this)">Cu 銅</button>
   <button class="filter-btn" data-cat="ag" onclick="setFilter('ag',this)">Ag 銀</button>
@@ -101,8 +97,6 @@
   <button class="filter-btn" data-cat="mn" onclick="setFilter('mn',this)">Mn マンガン</button>
   <button class="filter-btn" data-cat="other" onclick="setFilter('other',this)">その他遷移金属</button>
   <button class="filter-btn" data-cat="ion" onclick="setFilter('ion',this)">金属イオン分析・合金</button>
-  <button class="filter-btn" data-cat="wrong" onclick="setFilter('wrong',this)">❌ 間違えた問題 <span id="wrong-count-badge" style="margin-left:4px;background:rgba(239,68,68,.25);color:#f87171;border-radius:10px;padding:1px 7px;font-size:.75rem">0</span></button>
-  <button class="filter-btn" id="clear-wrong-btn" onclick="clearWrongList()" style="border-color:rgba(239,68,68,.3);color:#f87171;display:none">🗑 リセット</button>
 </div>
 <div class="stats-bar">
   <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">合計</div></div>
@@ -147,12 +141,6 @@
   <button class="btn btn-primary" onclick="restartAll()" style="margin:auto">もう一度挑戦</button>
 </div>
 <script>
-window.onerror=function(msg,src,line,col,err){
-  var box=document.getElementById('debug-box');
-  if(box){box.style.display='block';box.textContent='ERROR: '+msg+' (line '+line+')';}
-  return false;
-};
-console.log('script start, ALL_QUESTIONS will be defined shortly');
 const CATEGORIES={fe:{label:'Fe 鉄',cls:'badge-fe'},cu:{label:'Cu 銅',cls:'badge-cu'},ag:{label:'Ag 銀',cls:'badge-ag'},zn:{label:'Zn 亜鉛',cls:'badge-zn'},cr:{label:'Cr クロム',cls:'badge-cr'},mn:{label:'Mn マンガン',cls:'badge-mn'},other:{label:'その他遷移金属',cls:'badge-other'},ion:{label:'金属イオン分析・合金',cls:'badge-ion'}};
 const ALL_QUESTIONS=[
 {id:1,category:'fe',question:`遷移元素は何族に属する元素か。`,answer:`第3族〜第12族の元素`,explanation:`周期表の中央部分に位置する。典型元素と区別して覚える。`},
@@ -288,7 +276,7 @@ const ALL_QUESTIONS=[
 ];
 
 let filteredQ=[…ALL_QUESTIONS],currentIndex=0,isFlipped=false,correctCount=0,wrongCount=0,answered=new Set();
-function setFilter(cat,btn){document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));btn.classList.add(‘active’);if(cat===‘wrong’){filteredQ=ALL_QUESTIONS.filter(q=>_wrongIds.has(q.id));}else if(cat===‘all’){filteredQ=[…ALL_QUESTIONS];}else{filteredQ=ALL_QUESTIONS.filter(q=>q.category===cat);}restartAll();}
+function setFilter(cat,btn){document.querySelectorAll(’.filter-btn’).forEach(b=>b.classList.remove(‘active’));btn.classList.add(‘active’);filteredQ=cat===‘all’?[…ALL_QUESTIONS]:ALL_QUESTIONS.filter(q=>q.category===cat);restartAll();}
 function shuffleArray(arr){for(let i=arr.length-1;i>0;i–){const j=Math.floor(Math.random()*(i+1));[arr[i],arr[j]]=[arr[j],arr[i]];}}
 function shuffleAndReset(){shuffleArray(filteredQ);currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
 function restartAll(){currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
@@ -305,7 +293,7 @@ isFlipped=false;document.getElementById(‘result-btns’).classList.remove(‘v
 updateStats();
 }
 function flipCard(){isFlipped=!isFlipped;document.getElementById(‘flashcard’).classList.toggle(‘flipped’,isFlipped);if(isFlipped)document.getElementById(‘result-btns’).classList.add(‘visible’);}
-function markResult(correct){if(!answered.has(currentIndex)){answered.add(currentIndex);if(correct){correctCount++;_wrongIds.delete(filteredQ[currentIndex].id);}else{wrongCount++;_wrongIds.add(filteredQ[currentIndex].id);}try{localStorage.setItem(‘cf2w’,JSON.stringify([…_wrongIds]));}catch(e){}updateWrongBadge();}nextCard();}
+function markResult(correct){if(!answered.has(currentIndex)){answered.add(currentIndex);if(correct)correctCount++;else wrongCount++;}nextCard();}
 function nextCard(){if(currentIndex<filteredQ.length-1){currentIndex++;renderCard();}else showComplete();}
 function prevCard(){if(currentIndex>0){currentIndex–;renderCard();}}
 function updateStats(){
@@ -329,13 +317,7 @@ document.getElementById(‘complete-screen’).classList.add(‘visible’);
 updateStats();
 }
 function toggleTheme(){document.body.classList.toggle(‘light’);document.querySelector(’.theme-toggle’).textContent=document.body.classList.contains(‘light’)?‘🌙’:‘☀️’;}
-console.log(“ALL_QUESTIONS length:”, ALL_QUESTIONS.length);
-var _wrongIds=(function(){try{return new Set(JSON.parse(localStorage.getItem(‘cf2w’)||’[]’));}catch(e){return new Set();}})();
-function updateWrongBadge(){var n=_wrongIds.size;var el=document.getElementById(‘wrong-count-badge’);if(el)el.textContent=n;var btn=document.getElementById(‘clear-wrong-btn’);if(btn)btn.style.display=n>0?’’:‘none’;}
-function clearWrongList(){_wrongIds.clear();try{localStorage.removeItem(‘cf2w’);}catch(e){}updateWrongBadge();filteredQ=[…ALL_QUESTIONS];currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);document.querySelectorAll(’.filter-btn’).forEach(function(b){b.classList.remove(‘active’);});document.getElementById(‘filter-all’).classList.add(‘active’);renderCard();updateWrongBadge();}
-console.log(“calling renderCard, filteredQ.length:”, filteredQ.length);
-renderCard();updateWrongBadge();
-console.log(“renderCard done, currentIndex:”, currentIndex);
+renderCard();
 </script>
 
 </body>
