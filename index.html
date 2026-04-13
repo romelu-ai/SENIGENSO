@@ -171,7 +171,7 @@ else if(cat===‘all’){filteredQ=ALL_QUESTIONS.slice();}
 else{filteredQ=ALL_QUESTIONS.filter(function(q){return q.category===cat;});}
 restartAll();
 }
-function shuffleArray(arr){for(var i=arr.length-1;i>0;i–){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}}
+function shuffleArray(arr){for(var i=arr.length-1;i>0;i––){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}}
 function shuffleAndReset(){shuffleArray(filteredQ);currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
 function restartAll(){currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);renderCard();}
 function renderCard(){
@@ -201,7 +201,7 @@ updateWrongBadge();
 nextCard();
 }
 function nextCard(){if(currentIndex<filteredQ.length-1){currentIndex++;renderCard();}else showComplete();}
-function prevCard(){if(currentIndex>0){currentIndex–;renderCard();}}
+function prevCard(){if(currentIndex>0){currentIndex--;renderCard();}}
 function updateStats(){
 document.getElementById(‘stat-total’).textContent=filteredQ.length;
 document.getElementById(‘stat-correct’).textContent=correctCount;
