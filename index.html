@@ -79,9 +79,13 @@
   .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
   body.light{--bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e2e6f0;--text:#1a1d27;--text-sub:#6b7280;--shadow:0 8px 32px rgba(0,0,0,.1)}
   @media(max-width:480px){.card-face{padding:22px 18px}.btn{padding:9px 16px;font-size:.82rem}}
+
+#debug-box{position:fixed;bottom:0;left:0;right:0;background:#ff0044;color:#fff;font-size:11px;padding:4px 8px;z-index:9999;display:none;word-break:break-all;}
 </style>
+
 </head>
 <body>
+<div id="debug-box"></div>
 <button class="theme-toggle" onclick="toggleTheme()">🌙</button>
 <header>
   <h1>⚗ CHEMISTRY FLASH II</h1>
@@ -143,6 +147,12 @@
   <button class="btn btn-primary" onclick="restartAll()" style="margin:auto">もう一度挑戦</button>
 </div>
 <script>
+window.onerror=function(msg,src,line,col,err){
+  var box=document.getElementById('debug-box');
+  if(box){box.style.display='block';box.textContent='ERROR: '+msg+' (line '+line+')';}
+  return false;
+};
+console.log('script start, ALL_QUESTIONS will be defined shortly');
 const CATEGORIES={fe:{label:'Fe 鉄',cls:'badge-fe'},cu:{label:'Cu 銅',cls:'badge-cu'},ag:{label:'Ag 銀',cls:'badge-ag'},zn:{label:'Zn 亜鉛',cls:'badge-zn'},cr:{label:'Cr クロム',cls:'badge-cr'},mn:{label:'Mn マンガン',cls:'badge-mn'},other:{label:'その他遷移金属',cls:'badge-other'},ion:{label:'金属イオン分析・合金',cls:'badge-ion'}};
 const ALL_QUESTIONS=[
 {id:1,category:'fe',question:`遷移元素は何族に属する元素か。`,answer:`第3族〜第12族の元素`,explanation:`周期表の中央部分に位置する。典型元素と区別して覚える。`},
@@ -319,10 +329,13 @@ document.getElementById(‘complete-screen’).classList.add(‘visible’);
 updateStats();
 }
 function toggleTheme(){document.body.classList.toggle(‘light’);document.querySelector(’.theme-toggle’).textContent=document.body.classList.contains(‘light’)?‘🌙’:‘☀️’;}
+console.log(“ALL_QUESTIONS length:”, ALL_QUESTIONS.length);
 var _wrongIds=(function(){try{return new Set(JSON.parse(localStorage.getItem(‘cf2w’)||’[]’));}catch(e){return new Set();}})();
 function updateWrongBadge(){var n=_wrongIds.size;var el=document.getElementById(‘wrong-count-badge’);if(el)el.textContent=n;var btn=document.getElementById(‘clear-wrong-btn’);if(btn)btn.style.display=n>0?’’:‘none’;}
 function clearWrongList(){_wrongIds.clear();try{localStorage.removeItem(‘cf2w’);}catch(e){}updateWrongBadge();filteredQ=[…ALL_QUESTIONS];currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById(‘complete-screen’).classList.remove(‘visible’);document.getElementById(‘card-area’).style.display=’’;document.getElementById(‘result-btns’).classList.remove(‘visible’);document.querySelectorAll(’.filter-btn’).forEach(function(b){b.classList.remove(‘active’);});document.getElementById(‘filter-all’).classList.add(‘active’);renderCard();updateWrongBadge();}
+console.log(“calling renderCard, filteredQ.length:”, filteredQ.length);
 renderCard();updateWrongBadge();
+console.log(“renderCard done, currentIndex:”, currentIndex);
 </script>
 
 </body>
