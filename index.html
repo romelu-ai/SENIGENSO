@@ -2,359 +2,711 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>化学フラッシュカード II — 遷移元素・金属イオン分析</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<title>クラスページ 共同編集(レイアウトエディタ対応)</title>
 <style>
-  :root{--bg:#0f1117;--surface:#1a1d27;--card:#22263a;--border:#2e3350;--c-fe:#f97316;--c-cu:#3b82f6;--c-ag:#a855f7;--c-zn:#22c55e;--c-cr:#ef4444;--c-mn:#eab308;--c-other:#06b6d4;--c-ion:#ec4899;--accent:#f97316;--text:#e8eaf0;--text-sub:#8b90a8;--shadow:0 8px 32px rgba(0,0,0,.5)}
-  *{margin:0;padding:0;box-sizing:border-box}
-  body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;min-height:100vh;padding:20px}
-  header{text-align:center;padding:40px 20px 20px}
-  header h1{font-family:'Space Mono',monospace;font-size:clamp(1.3rem,4vw,2rem);letter-spacing:.1em;color:var(--c-fe);text-shadow:0 0 20px rgba(249,115,22,.4)}
-  header p{color:var(--text-sub);font-size:.9rem;margin-top:6px}
-  .filter-bar{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin:20px auto;max-width:780px}
-  .filter-btn{padding:7px 16px;border-radius:20px;border:2px solid var(--border);background:var(--surface);color:var(--text-sub);font-family:'Noto Sans JP',sans-serif;font-size:.8rem;cursor:pointer;transition:all .2s}
-  .filter-btn:hover{border-color:var(--accent);color:var(--text)}
-  .filter-btn.active{color:#0f1117;font-weight:700}
-  .filter-btn[data-cat=fe].active{background:var(--c-fe);border-color:var(--c-fe)}
-  .filter-btn[data-cat=cu].active{background:var(--c-cu);border-color:var(--c-cu)}
-  .filter-btn[data-cat=ag].active{background:var(--c-ag);border-color:var(--c-ag)}
-  .filter-btn[data-cat=zn].active{background:var(--c-zn);border-color:var(--c-zn)}
-  .filter-btn[data-cat=cr].active{background:var(--c-cr);border-color:var(--c-cr)}
-  .filter-btn[data-cat=mn].active{background:var(--c-mn);border-color:var(--c-mn)}
-  .filter-btn[data-cat=other].active{background:var(--c-other);border-color:var(--c-other)}
-  .filter-btn[data-cat=ion].active{background:var(--c-ion);border-color:var(--c-ion)}
-  .filter-btn[data-cat=all].active{background:var(--accent);border-color:var(--accent)}
-  .filter-btn[data-cat=wrong].active{background:#ef4444;border-color:#ef4444;color:#fff}
-  .stats-bar{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:0 auto 24px;max-width:700px}
-  .stat{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:10px 18px;text-align:center;min-width:80px}
-  .stat-num{font-family:'Space Mono',monospace;font-size:1.4rem;color:var(--accent)}
-  .stat-label{font-size:.72rem;color:var(--text-sub);margin-top:2px}
-  .progress-wrap{max-width:700px;margin:0 auto 20px}
-  .progress-bar-bg{height:4px;background:var(--border);border-radius:2px;overflow:hidden}
-  .progress-bar-fill{height:100%;background:linear-gradient(90deg,var(--c-fe),var(--c-cu));border-radius:2px;transition:width .4s ease}
-  .progress-text{text-align:right;font-size:.75rem;color:var(--text-sub);margin-top:6px;font-family:'Space Mono',monospace}
-  .card-area{max-width:700px;margin:0 auto;perspective:1200px}
-  .flashcard{width:100%;min-height:320px;position:relative;cursor:pointer;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.2,.2,1)}
-  .flashcard.flipped{transform:rotateY(180deg)}
-  .card-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border:1px solid var(--border);border-radius:20px;padding:32px 28px;display:flex;flex-direction:column;justify-content:center;box-shadow:var(--shadow);min-height:320px}
-  .card-face.back{transform:rotateY(180deg)}
-  .card-badge{display:inline-flex;align-items:center;gap:6px;font-size:.75rem;font-family:'Space Mono',monospace;padding:4px 12px;border-radius:20px;margin-bottom:16px;width:fit-content}
-  .badge-fe{background:rgba(249,115,22,.15);color:var(--c-fe);border:1px solid rgba(249,115,22,.3)}
-  .badge-cu{background:rgba(59,130,246,.15);color:var(--c-cu);border:1px solid rgba(59,130,246,.3)}
-  .badge-ag{background:rgba(168,85,247,.15);color:var(--c-ag);border:1px solid rgba(168,85,247,.3)}
-  .badge-zn{background:rgba(34,197,94,.15);color:var(--c-zn);border:1px solid rgba(34,197,94,.3)}
-  .badge-cr{background:rgba(239,68,68,.15);color:var(--c-cr);border:1px solid rgba(239,68,68,.3)}
-  .badge-mn{background:rgba(234,179,8,.15);color:var(--c-mn);border:1px solid rgba(234,179,8,.3)}
-  .badge-other{background:rgba(6,182,212,.15);color:var(--c-other);border:1px solid rgba(6,182,212,.3)}
-  .badge-ion{background:rgba(236,72,153,.15);color:var(--c-ion);border:1px solid rgba(236,72,153,.3)}
-  .card-num{font-family:'Space Mono',monospace;font-size:.75rem;color:var(--text-sub);margin-bottom:12px}
-  .card-question{font-size:clamp(1rem,2.5vw,1.2rem);font-weight:700;line-height:1.7;color:var(--text)}
-  .card-hint{margin-top:24px;font-size:.8rem;color:var(--text-sub);display:flex;align-items:center;gap:6px}
-  .card-hint::before{content:"▶";font-size:.7rem}
-  .card-answer{font-size:clamp(.95rem,2.2vw,1.1rem);font-weight:700;line-height:1.8;color:var(--accent);white-space:pre-line;margin-bottom:14px}
-  .card-explanation{font-size:.83rem;color:var(--text-sub);line-height:1.7;border-top:1px solid var(--border);padding-top:12px}
-  .result-btns{display:none;gap:12px;justify-content:center;margin:0 auto 12px;max-width:700px}
-  .result-btns.visible{display:flex}
-  .controls{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin:20px auto;max-width:700px}
-  .btn{padding:11px 24px;border-radius:12px;border:none;font-family:'Noto Sans JP',sans-serif;font-size:.9rem;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:8px}
-  .btn-primary{background:var(--accent);color:#0f1117}
-  .btn-primary:hover{filter:brightness(1.15);transform:translateY(-2px)}
-  .btn-secondary{background:var(--surface);color:var(--text);border:1px solid var(--border)}
-  .btn-secondary:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-2px)}
-  .btn-danger{background:rgba(239,68,68,.15);color:#f87171;border:1px solid rgba(239,68,68,.3)}
-  .btn-danger:hover{background:rgba(239,68,68,.25);transform:translateY(-2px)}
-  .btn-correct{background:rgba(34,197,94,.15);color:#4ade80;border:1px solid rgba(34,197,94,.3)}
-  .btn-correct:hover{background:rgba(34,197,94,.3);transform:translateY(-2px)}
-  .btn-wrong{background:rgba(249,115,22,.15);color:var(--c-fe);border:1px solid rgba(249,115,22,.3)}
-  .btn-wrong:hover{background:rgba(249,115,22,.3);transform:translateY(-2px)}
-  .complete-screen{display:none;text-align:center;max-width:500px;margin:40px auto;padding:48px 32px;background:var(--card);border:1px solid var(--border);border-radius:24px;box-shadow:var(--shadow)}
-  .complete-screen.visible{display:block}
-  .complete-emoji{font-size:4rem;margin-bottom:16px}
-  .complete-title{font-family:'Space Mono',monospace;font-size:1.5rem;color:var(--accent);margin-bottom:12px}
-  .complete-score{font-size:3rem;font-weight:700;color:var(--text);margin:16px 0;font-family:'Space Mono',monospace}
-  .complete-sub{color:var(--text-sub);font-size:.9rem}
-  .theme-toggle{position:fixed;top:16px;right:16px;background:var(--surface);border:1px solid var(--border);color:var(--text-sub);border-radius:50%;width:40px;height:40px;cursor:pointer;font-size:1.1rem;display:flex;align-items:center;justify-content:center;transition:all .2s}
-  .theme-toggle:hover{border-color:var(--accent);color:var(--accent)}
-  body.light{--bg:#f4f6fb;--surface:#fff;--card:#fff;--border:#e2e6f0;--text:#1a1d27;--text-sub:#6b7280;--shadow:0 8px 32px rgba(0,0,0,.1)}
-  @media(max-width:480px){.card-face{padding:22px 18px}.btn{padding:9px 16px;font-size:.82rem}}
+  :root{
+    --bg:#f3f1ec; --panel:#ffffff; --ink:#2b2b28; --sub:#6b6862;
+    --line:#dcd8cf; --accent:#4a6b5a; --accent-soft:#e4ece7;
+  }
+  *{box-sizing:border-box;}
+  body{ margin:0; font-family:"Hiragino Sans","Yu Gothic",sans-serif; background:var(--bg); color:var(--ink); }
+  header{ padding:20px 24px 14px; border-bottom:1px solid var(--line); background:var(--panel); }
+  h1{ font-size:18px; margin:0 0 4px; font-weight:700; }
+  .sub{ font-size:13px; color:var(--sub); margin:0; }
+  .tabs{ display:flex; gap:8px; padding:0 24px; background:var(--panel); border-bottom:1px solid var(--line); }
+  .tab{ padding:10px 16px; font-size:13px; cursor:pointer; border-bottom:2px solid transparent; color:var(--sub); }
+  .tab.active{ color:var(--accent); border-bottom-color:var(--accent); font-weight:700; }
+  .toolbar{ display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:12px 24px; background:var(--panel); border-bottom:1px solid var(--line); }
+  button.action{ padding:8px 14px; border-radius:8px; border:1px solid var(--accent); background:var(--accent); color:#fff; font-size:13px; cursor:pointer; }
+  button.action.secondary{ background:#fff; color:var(--accent); }
+  button.action.danger{ background:#fff; color:#a04a3a; border-color:#a04a3a; }
+  .status{ font-size:12px; color:var(--sub); margin-left:auto; }
+  .who-badge{ font-size:12px; color:var(--sub); display:flex; gap:6px; align-items:center;}
+  .who-badge input{ padding:5px 8px; border:1px solid var(--line); border-radius:6px; font-size:12px; width:100px;}
+  main{ display:flex; gap:20px; padding:20px 24px 40px; align-items:flex-start; flex-wrap:wrap; }
+  .view{ display:none; }
+  .view.active{ display:flex; gap:20px; flex-wrap:wrap; align-items:flex-start; width:100%; }
+  .canvas-wrap{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  canvas{ display:block; border:1px solid #cfcbc0; max-width:100%; height:auto; }
+  #stage{ cursor:pointer; }
+  #tplCanvas{ cursor:default; }
+  .side-panel{ width:300px; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .side-panel h2{ font-size:14px; margin:0 0 10px; }
+  .side-panel h3{ font-size:12.5px; margin:14px 0 8px; color:var(--accent); }
+  .field{margin-bottom:10px;}
+  .field label{ display:block; font-size:12px; color:var(--sub); margin-bottom:4px; }
+  .field input[type=text], .field select{ width:100%; padding:6px 8px; border:1px solid var(--line); border-radius:6px; font-size:12.5px; }
+  .field input[type=range]{ width:100%; }
+  .field input[type=color]{ width:44px;height:30px;border:1px solid var(--line);border-radius:6px;padding:2px; }
+  .rangeval{ font-size:11px; color:var(--sub); }
+  .note{ font-size:11.5px; color:var(--sub); line-height:1.6; background:var(--accent-soft); padding:10px; border-radius:8px; margin-top:14px; }
+  .slot-editor{ border-top:1px solid var(--line); margin-top:14px; padding-top:14px; }
+  .slot-editor.empty{color:var(--sub);font-size:13px;}
+  .upload-btn{ display:inline-block; padding:7px 12px; border:1px dashed var(--line); border-radius:6px; font-size:12px; cursor:pointer; color:var(--accent); background:#fff; margin-right:6px;}
+  .upload-btn input{display:none;}
+  .divider{border-top:1px solid var(--line); margin:14px 0;}
+  .row-btns{display:flex; gap:6px; flex-wrap:wrap;}
+  .layer-item{ display:flex; align-items:center; justify-content:space-between; padding:6px 8px; border:1px solid var(--line); border-radius:6px; margin-bottom:6px; font-size:12px; cursor:pointer; }
+  .layer-item.selected{ border-color:var(--accent); background:var(--accent-soft); }
+  .layer-item button{ border:none; background:none; color:#a04a3a; cursor:pointer; font-size:12px; }
 </style>
 </head>
 <body>
-<button class="theme-toggle" onclick="toggleTheme()">🌙</button>
+
 <header>
-  <h1>⚗ CHEMISTRY FLASH II</h1>
-  <p>第3編 遷移元素・金属イオン分析 — 全<span id="total-count"></span>問</p>
+  <h1>クラスページ 共同編集</h1>
+  <p class="sub">440×300mm・50mm角×38枚。マスのデザインは専用エディタで作成し、全体に一括反映します。</p>
 </header>
-<div class="filter-bar">
-  <button class="filter-btn active" id="filter-all" data-cat="all" onclick="setFilter('all',this)">すべて</button>
-  <button class="filter-btn" data-cat="fe" onclick="setFilter('fe',this)">Fe 鉄</button>
-  <button class="filter-btn" data-cat="cu" onclick="setFilter('cu',this)">Cu 銅</button>
-  <button class="filter-btn" data-cat="ag" onclick="setFilter('ag',this)">Ag 銀</button>
-  <button class="filter-btn" data-cat="zn" onclick="setFilter('zn',this)">Zn 亜鉛</button>
-  <button class="filter-btn" data-cat="cr" onclick="setFilter('cr',this)">Cr クロム</button>
-  <button class="filter-btn" data-cat="mn" onclick="setFilter('mn',this)">Mn マンガン</button>
-  <button class="filter-btn" data-cat="other" onclick="setFilter('other',this)">その他遷移金属</button>
-  <button class="filter-btn" data-cat="ion" onclick="setFilter('ion',this)">金属イオン分析・合金</button>
-  <button class="filter-btn" data-cat="wrong" onclick="setFilter('wrong',this)">❌ 間違えた問題 <span id="wrong-count-badge" style="margin-left:4px;background:rgba(239,68,68,.25);color:#f87171;border-radius:10px;padding:1px 7px;font-size:.75rem">0</span></button>
-  <button class="filter-btn" id="clear-wrong-btn" onclick="clearWrongList()" style="border-color:rgba(239,68,68,.3);color:#f87171;display:none">🗑 リセット</button>
+
+<div class="tabs">
+  <div class="tab active" data-view="pageView">クラスページ全体</div>
+  <div class="tab" data-view="tplView">マスのレイアウトを編集</div>
 </div>
-<div class="stats-bar">
-  <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">合計</div></div>
-  <div class="stat"><div class="stat-num" id="stat-correct" style="color:#4ade80">0</div><div class="stat-label">正解</div></div>
-  <div class="stat"><div class="stat-num" id="stat-wrong" style="color:var(--c-fe)">0</div><div class="stat-label">不正解</div></div>
-  <div class="stat"><div class="stat-num" id="stat-remain" style="color:var(--c-cu)">0</div><div class="stat-label">残り</div></div>
+
+<div class="toolbar">
+  <div class="who-badge">自分の名前: <input type="text" id="editorName" placeholder="例:田中" maxlength="10"></div>
+  <button class="action secondary" id="exportPreviewBtn">プレビューを保存</button>
+  <button class="action" id="exportHiResBtn">印刷用に書き出す(300ppi)</button>
+  <div class="status" id="statusText">自動同期中</div>
 </div>
-<div class="progress-wrap">
-  <div class="progress-bar-bg"><div class="progress-bar-fill" id="progress-fill" style="width:0%"></div></div>
-  <div class="progress-text" id="progress-text">0 / 0</div>
-</div>
-<div class="card-area" id="card-area">
-  <div class="flashcard" id="flashcard" onclick="flipCard()">
-    <div class="card-face front">
-      <div class="card-num" id="card-num"></div>
-      <div class="card-badge" id="card-badge"></div>
-      <div class="card-question" id="card-question"></div>
-      <div class="card-hint">タップして答えを確認</div>
+
+<main>
+
+  <!-- ==== クラスページ全体ビュー ==== -->
+  <div class="view active" id="pageView">
+    <div class="canvas-wrap">
+      <canvas id="stage" width="880" height="600"></canvas>
     </div>
-    <div class="card-face back">
-      <div class="card-badge" id="card-badge-back"></div>
-      <div class="card-answer" id="card-answer"></div>
-      <div class="card-explanation" id="card-explanation"></div>
+    <div class="side-panel">
+      <h2>ページ全体の設定</h2>
+      <div class="field">
+        <label>全体の背景色</label>
+        <input type="color" id="bgColorInput" value="#fdfaf3">
+      </div>
+      <div class="divider"></div>
+      <h2>中央スペース</h2>
+      <div class="field">
+        <label>中央に表示するタイトル(任意)</label>
+        <input type="text" id="titleInput" placeholder="例: 3年A組" maxlength="20">
+      </div>
+      <div class="row-btns">
+        <label class="upload-btn">中央に画像を追加<input type="file" id="centerImageInput" accept="image/*"></label>
+        <button class="action danger" id="clearCenterImageBtn">中央の画像を削除</button>
+      </div>
+      <div class="divider"></div>
+      <div class="slot-editor empty" id="slotEditor">
+        外周のマスをクリックすると、ここで名前・写真・テキストを編集できます。
+      </div>
+      <div class="note">
+        <b>CMYK入稿データの作り方</b><br>
+        「印刷用に書き出す」でPNGを保存し、Photopeaで①解像度を300に設定→②CMYK Colorに変換→③PDF書き出し、の順で進めてください。
+      </div>
     </div>
   </div>
-</div>
-<div class="result-btns" id="result-btns">
-  <button class="btn btn-wrong" onclick="markResult(false)">✗ もう一度</button>
-  <button class="btn btn-correct" onclick="markResult(true)">✓ 正解！</button>
-</div>
-<div class="controls">
-  <button class="btn btn-secondary" onclick="prevCard()">← 前へ</button>
-  <button class="btn btn-primary" onclick="nextCard()">次へ →</button>
-  <button class="btn btn-danger" onclick="shuffleAndReset()">🔀 シャッフル</button>
-</div>
-<div class="complete-screen" id="complete-screen">
-  <div class="complete-emoji" id="complete-emoji">🎉</div>
-  <div class="complete-title">COMPLETE!</div>
-  <div class="complete-score" id="complete-score"></div>
-  <div class="complete-sub" id="complete-sub"></div>
-  <br><br>
-  <button class="btn btn-primary" onclick="restartAll()" style="margin:auto">もう一度挑戦</button>
-</div>
+
+  <!-- ==== テンプレート編集ビュー ==== -->
+  <div class="view" id="tplView">
+    <div class="canvas-wrap">
+      <canvas id="tplCanvas" width="400" height="400"></canvas>
+      <p class="rangeval" style="margin-top:8px">1マス=50×50mm を拡大表示しています。要素をドラッグで移動、右下の●で写真サイズを変更できます。</p>
+    </div>
+    <div class="side-panel">
+      <h2>要素の追加</h2>
+      <div class="row-btns">
+        <button class="action secondary" id="addTextBtn">＋ テキストボックスを追加</button>
+      </div>
+
+      <div class="divider"></div>
+      <h2>レイヤー一覧</h2>
+      <div id="layerList"></div>
+
+      <div class="divider"></div>
+      <div id="propPanel"><p class="rangeval">要素をクリックすると、ここでスタイルを編集できます。</p></div>
+
+      <div class="divider"></div>
+      <h3>Slidesなどで作ったフレーム画像</h3>
+      <p class="rangeval">Google Slides等で作った正方形デザインを画像(PNG)として書き出し、ここに読み込むと、全マスの上に装飾フレームとして重ねて表示できます。</p>
+      <div class="row-btns">
+        <label class="upload-btn">フレーム画像を読み込む<input type="file" id="frameImageInput" accept="image/*"></label>
+        <button class="action danger" id="clearFrameImageBtn">削除</button>
+      </div>
+    </div>
+  </div>
+
+</main>
+
 <script>
-const QUESTIONS_DATA = [
-  // ===== 遷移元素の概説（image8：p.240-241） =====
-  {"id":1,"category":"fe","question":"遷移元素は何族に属する元素か。","answer":"第3族〜第12族の元素","explanation":"周期表の中央部分に位置する。典型元素と区別して覚える。"},
-  {"id":2,"category":"fe","question":"遷移元素の最外殻電子数は何個か。","answer":"1個または2個","explanation":"内側のd軌道に電子が順に入るため最外殻電子数はほぼ同じ（1〜2個）。"},
-  {"id":3,"category":"fe","question":"遷移元素の密度・融点は典型金属と比べてどうか。","answer":"密度が大きく、融点が高い。","explanation":"Fe（7.9 g/cm³、1535℃）やCu（9.0 g/cm³、1083℃）など。"},
-  {"id":4,"category":"fe","question":"遷移元素の酸化数の特徴を答えよ。","answer":"同一元素でも複数の酸化数をとる。\n例：Feは+2と+3（+3のほうが安定）","explanation":"これにより多様な化合物を形成する。"},
-  {"id":5,"category":"fe","question":"遷移元素のイオンの色の特徴を答えよ。（Fe²⁺・Fe³⁺・Mn²⁺・Cu²⁺・Ni²⁺を含めて）","answer":"Fe²⁺（淡緑色）\nFe³⁺（黄褐色）\nMn²⁺（淡桃色）\nCu²⁺（青色）\nNi²⁺（緑色）","explanation":"d軌道の電子遷移により可視光を吸収して発色する。"},
-  {"id":6,"category":"fe","question":"遷移元素は錯イオンをつくりやすい。配位子の例を4つ答えよ。","answer":"Cl⁻（クロリド）、OH⁻（ヒドロキシド）、H₂O（アクア）、CN⁻（シアニド）、NH₃（アンミン）など","explanation":"d軌道の空きに配位子が配位結合できるから錯イオンをつくりやすい。"},
-  {"id":7,"category":"fe","question":"遷移元素が触媒として使われる例を2つ答えよ。","answer":"① Fe（ハーバー・ボッシュ法のNH₃合成触媒）\n② MnO₂（H₂O₂の分解触媒）","explanation":"遷移元素は複数の酸化数をとれるため触媒として働きやすい。"},
+const PAGE_W_MM = 440, PAGE_H_MM = 300;
+const CELL_MM = 50;
+const COLS = Math.floor(PAGE_W_MM / CELL_MM);
+const ROWS = Math.floor(PAGE_H_MM / CELL_MM);
+const GAP_X_MM = COLS > 1 ? (PAGE_W_MM - COLS*CELL_MM) / (COLS - 1) : 0;
+const GAP_Y_MM = ROWS > 1 ? (PAGE_H_MM - ROWS*CELL_MM) / (ROWS - 1) : 0;
+const PHOTO_COUNT = 38;
 
-  // ===== 錯イオン（image14：p.242-243） =====
-  {"id":8,"category":"fe","question":"錯イオンの名称：[Ag(NH₃)₂]⁺の名称・形・配位数を答えよ。","answer":"名称：ジアンミン銀(I)イオン\n形：直線形\n配位数：2","explanation":"NH₃が2個配位した直線形の錯イオン。"},
-  {"id":9,"category":"cu","question":"錯イオンの名称：[Cu(NH₃)₄]²⁺の名称・形・配位数・色を答えよ。","answer":"名称：テトラアンミン銅(II)イオン\n形：正方形（平面四角形）\n配位数：4\n色：深青色","explanation":"NH₃が4個配位した正方形の錯イオン。Cu²⁺の確認に使う。"},
-  {"id":10,"category":"zn","question":"錯イオンの名称：[Zn(NH₃)₄]²⁺の名称・形・配位数・色を答えよ。","answer":"名称：テトラアンミン亜鉛(II)イオン\n形：正四面体形\n配位数：4\n色：無色","explanation":"NH₃が4個配位した正四面体形の錯イオン。"},
-  {"id":11,"category":"fe","question":"錯イオンの名称：[Fe(CN)₆]⁴⁻の名称・形・配位数を答えよ。","answer":"名称：ヘキサシアニド鉄(II)イオン\n形：正八面体形\n配位数：6","explanation":"CN⁻が6個配位した正八面体形の錯イオン。黄血塩を水に溶かすと生成する。"},
-  {"id":12,"category":"fe","question":"錯イオンの名称：[Fe(CN)₆]³⁻の名称・形・配位数を答えよ。","answer":"名称：ヘキサシアニド鉄(III)イオン\n形：正八面体形\n配位数：6","explanation":"CN⁻が6個配位した正八面体形の錯イオン。赤血塩を水に溶かすと生成する。"},
-  {"id":13,"category":"fe","question":"黄血塩の化学式・正式名称・電離式を答えよ。","answer":"化学式：K₄[Fe(CN)₆]\n正式名称：ヘキサシアニド鉄(II)酸カリウム\n電離：K₄[Fe(CN)₆] → 4K⁺ + [Fe(CN)₆]⁴⁻","explanation":"中心金属はFe²⁺。水溶液は淡黄色。"},
-  {"id":14,"category":"fe","question":"赤血塩の化学式・正式名称・電離式を答えよ。","answer":"化学式：K₃[Fe(CN)₆]\n正式名称：ヘキサシアニド鉄(III)酸カリウム\n電離：K₃[Fe(CN)₆] → 3K⁺ + [Fe(CN)₆]³⁻","explanation":"中心金属はFe³⁺。Fe²⁺検出に使う。"},
-
-  // ===== 鉄 Fe（image14：p.242-243、image3：p.244-245） =====
-  {"id":15,"category":"fe","question":"鉄Feの族と主な酸化数、単体の性質を答えよ。","answer":"第8族。酸化数：+2（Fe²⁺）と+3（Fe³⁺）\n単体：灰白色の固体、融点1535℃、密度7.9 g/cm³","explanation":"酸化数は+2と+3（+3のほうが安定）。"},
-  {"id":16,"category":"fe","question":"鉄の製錬で用いる炉の名称と原料3つを答えよ。","answer":"溶鉱炉（高炉）\n原料：① 鉄鉱石（Fe₂O₃）\n　　　② コークス（炭素C）\n　　　③ 石灰石（CaCO₃）","explanation":"コークスが燃焼してCOを生成し、COが鉄鉱石を還元する。"},
-  {"id":17,"category":"fe","question":"溶鉱炉でFe₂O₃が還元される3段階の反応式をすべて書け。","answer":"① 3Fe₂O₃ + CO → 2Fe₃O₄ + CO₂\n② Fe₃O₄ + CO → 3FeO + CO₂\n③ FeO + CO → Fe + CO₂","explanation":"全体：Fe₂O₃ + 3CO → 2Fe + 3CO₂"},
-  {"id":18,"category":"fe","question":"銑鉄と鋼の違いを炭素含有量を含めて答えよ。","answer":"銑鉄：炭素を約4%含む。脆く硬い。溶鉱炉で得られる。\n鋼：炭素含有量を2〜0.02%に下げたもの。硬く強く加工しやすい。","explanation":"転炉で銑鉄に酸素を吹き込んで炭素を燃焼させ、鋼にする。"},
-  {"id":19,"category":"fe","question":"Fe₂O₃の色と名称を答えよ。","answer":"赤褐色。酸化鉄(III)。赤錆の主成分。","explanation":"自然界では鉄鉱石・赤鉄鉱として存在する。"},
-  {"id":20,"category":"fe","question":"Fe₃O₄の色と別名を答えよ。","answer":"黒色。四酸化三鉄（磁鉄鉱）。","explanation":"Fe²⁺とFe³⁺を含む混合酸化物。強く熱したときに生成する（黒さび）。"},
-  {"id":21,"category":"fe","question":"鉄と希硫酸の反応式を書け。","answer":"Fe + H₂SO₄ → FeSO₄ + H₂↑","explanation":"鉄は希酸に溶けてFe²⁺を生じH₂を発生させる。"},
-  {"id":22,"category":"fe","question":"Fe²⁺イオンを含む水溶液は何色か。","answer":"淡緑色","explanation":"鉄(II)イオンFe²⁺を含む水溶液は淡緑色。"},
-  {"id":23,"category":"fe","question":"Fe²⁺水溶液にNaOH水溶液を加えたときの反応式と沈殿の色を答えよ。","answer":"Fe²⁺ + 2OH⁻ → Fe(OH)₂↓\n沈殿の色：緑白色","explanation":"緑白色のFe(OH)₂は空気酸化でFe(OH)₃（赤褐色）になる。"},
-  {"id":24,"category":"fe","question":"Fe(OH)₂が空気中で酸化されてFe(OH)₃になる反応式を書け。","answer":"4Fe(OH)₂ + O₂ + 2H₂O → 4Fe(OH)₃","explanation":"緑白色→赤褐色に変化する。"},
-  {"id":25,"category":"fe","question":"Fe³⁺水溶液にNaOH水溶液を加えたときの反応式と沈殿の色を答えよ。","answer":"Fe³⁺ + 3OH⁻ → Fe(OH)₃↓\n沈殿の色：赤褐色","explanation":"Fe(OH)₃は両性でないためNaOH過剰でも溶けない。"},
-  {"id":26,"category":"fe","question":"Fe³⁺の確認試薬①：KSCNを用いる方法を答えよ。","answer":"試薬：KSCN（チオシアン酸カリウム）\n変化：血赤色の溶液になる","explanation":"Fe³⁺が存在すると血赤色になる。最重要の確認反応。"},
-  {"id":27,"category":"fe","question":"Fe³⁺の確認試薬②：黄血塩 K₄[Fe(CN)₆] を用いる方法を答えよ。","answer":"試薬：K₄[Fe(CN)₆]（黄血塩）\n変化：濃青色（紺青）沈殿が生じる","explanation":"黄血塩はFe³⁺と反応して濃青色沈殿（ターンブルブルー・紺青）を生じる。"},
-  {"id":28,"category":"fe","question":"Fe²⁺の確認試薬：赤血塩 K₃[Fe(CN)₆] を用いる方法を答えよ。","answer":"試薬：K₃[Fe(CN)₆]（赤血塩）\n変化：濃青色沈殿（紺青）が生じる","explanation":"赤血塩はFe²⁺と反応して濃青色沈殿を生じる。Fe²⁺とFe³⁺で試薬が逆になる点に注意。"},
-  {"id":29,"category":"fe","question":"Fe²⁺水溶液にH₂Sを通じたときの反応式と沈殿の色を答えよ。","answer":"Fe²⁺ + S²⁻ → FeS↓（黒色沈殿）\n※塩基性〜中性条件で沈殿する","explanation":"FeSは黒色。酸性条件では沈殿しにくい。"},
-  {"id":30,"category":"fe","question":"Fe³⁺水溶液にH₂Sを通じたときに起こる変化を答えよ。","answer":"Fe³⁺がFe²⁺に還元される（H₂SがFe³⁺を還元し、硫黄Sが析出する）。\n2Fe³⁺ + H₂S → 2Fe²⁺ + S↓ + 2H⁺","explanation":"Fe³⁺は酸化剤として働き、H₂Sに還元される。"},
-  {"id":31,"category":"fe","question":"トタンとブリキの違いをめっきの金属とイオン化傾向から説明せよ。","answer":"トタン：鉄板にZnをめっき。Zn > Feのため、傷がついてもZnが先に酸化されFeが保護される。\nブリキ：鉄板にSnをめっき。Fe > Snのため、傷がつくとFeが先に腐食する。","explanation":"イオン化傾向：Zn > Fe > Sn。トタンは屋根材、ブリキは缶詰に使用。"},
-
-  // ===== 銅 Cu（image10：p.246-247、image11：p.248-249） =====
-  {"id":32,"category":"cu","question":"銅Cuの族・単体の色・密度・融点・酸化数を答えよ。","answer":"第11族。赤色（赤橙色）の光沢をもつ金属。\n密度：9.0 g/cm³、融点：1083℃\n酸化数：+1（Cu⁺）・+2（Cu²⁺）","explanation":"電気・熱の良導体。電線材料として広く使われる。"},
-  {"id":33,"category":"cu","question":"銅を空気中で加熱したときの反応式と生成物の色を答えよ。","answer":"2Cu + O₂ → 2CuO（黒色）\nさらに強く加熱（1000℃以上）すると：\n4CuO → 2Cu₂O + O₂（Cu₂Oは赤色）","explanation":"酸化銅(II)CuOは黒色。さらに高温で酸化銅(I)Cu₂Oの赤色になる。"},
-  {"id":34,"category":"cu","question":"銅と希硝酸の反応式を書け。発生する気体の色も答えよ。","answer":"3Cu + 8HNO₃(希) → 3Cu(NO₃)₂ + 2NO↑ + 4H₂O\nNO：無色（空気に触れると赤褐色のNO₂になる）","explanation":"希硝酸ではNO（無色の気体）が発生する。"},
-  {"id":35,"category":"cu","question":"銅と濃硝酸の反応式を書け。発生する気体の色も答えよ。","answer":"Cu + 4HNO₃(濃) → Cu(NO₃)₂ + 2NO₂↑ + 2H₂O\nNO₂：赤褐色","explanation":"濃硝酸ではNO₂（赤褐色の刺激臭の気体）が発生する。"},
-  {"id":36,"category":"cu","question":"銅と熱濃硫酸の反応式を書け。","answer":"Cu + 2H₂SO₄(熱濃) → CuSO₄ + SO₂↑ + 2H₂O","explanation":"銅は希硫酸とは反応しないが、熱濃硫酸には溶ける。SO₂（無色・刺激臭）発生。"},
-  {"id":37,"category":"cu","question":"CuSO₄·5H₂Oの色と、加熱して無水物にしたときの色を答えよ。","answer":"CuSO₄·5H₂O：青色\n無水CuSO₄：白色\n（水を加えると再び青色になる）","explanation":"無水CuSO₄に水を加えると再び青色になる。水分検出に利用できる。"},
-  {"id":38,"category":"cu","question":"Cu²⁺水溶液に少量のNaOH水溶液を加えたときの反応式と沈殿の色を答えよ。","answer":"Cu²⁺ + 2OH⁻ → Cu(OH)₂↓（青白色沈殿）","explanation":"Cu(OH)₂は青白色。加熱するとCuO（黒色）になる。"},
-  {"id":39,"category":"cu","question":"Cu(OH)₂を加熱したときの反応式と生成物の色を答えよ。","answer":"Cu(OH)₂ → CuO + H₂O\nCuO：黒色","explanation":"青白色→黒色に変化する。"},
-  {"id":40,"category":"cu","question":"Cu²⁺を含む水溶液に過剰のアンモニア水を加えたときの変化と反応式を答えよ。","answer":"少量NH₃水：Cu(OH)₂↓（青白色沈殿）が生じる\n過剰NH₃水：Cu(OH)₂ + 4NH₃ → [Cu(NH₃)₄]²⁺ + 2OH⁻\n沈殿が溶けて深青色溶液になる","explanation":"テトラアンミン銅(II)イオン[Cu(NH₃)₄]²⁺（深青色）が生成する。"},
-  {"id":41,"category":"cu","question":"Cu²⁺水溶液にH₂Sを通じたときの反応式と沈殿の色を答えよ。","answer":"Cu²⁺ + S²⁻ → CuS↓（黒色沈殿）","explanation":"CuSは黒色。酸性水溶液中でもH₂Sにより沈殿する（酸に難溶）。"},
-  {"id":42,"category":"cu","question":"銅が希塩酸・希硫酸と反応しない理由を答えよ。","answer":"銅のイオン化傾向が水素Hより小さいから。","explanation":"イオン化傾向：Cu < H₂。酸化力のない酸とは反応しない。"},
-  {"id":43,"category":"cu","question":"黄銅・青銅・白銅の組成を答えよ。","answer":"黄銅（真鍮）：Cu-Zn合金（5円硬貨・楽器）\n青銅（ブロンズ）：Cu-Sn合金（銅像・鐘）\n白銅：Cu-Ni合金（100円・50円硬貨）","explanation":"合金の組成と用途をセットで覚える。"},
-  {"id":44,"category":"cu","question":"銅のさび（緑青）の色と主成分を答えよ。","answer":"色：青緑色\n主成分：Cu₂(OH)₂CO₃（塩基性炭酸銅(II)）など","explanation":"銅像・銅屋根に見られる青緑色のさび。"},
-
-  // ===== 銀 Ag（image4：p.250-251） =====
-  {"id":45,"category":"ag","question":"銀Agの族・密度・融点・酸化数・特徴を答えよ。","answer":"第11族。密度：10.5 g/cm³、融点：962℃\n酸化数：+1（Ag⁺）\n電気・熱伝導率は金属中最大","explanation":"電気伝導率はAg > Cu > Au > Al の順。"},
-  {"id":46,"category":"ag","question":"銀と希硝酸の反応式を書け。","answer":"3Ag + 4HNO₃(希) → 3AgNO₃ + 2NO↑ + 2H₂O","explanation":"Agは希塩酸・希硫酸とは反応しないが、硝酸・王水には溶ける。"},
-  {"id":47,"category":"ag","question":"AgNO₃水溶液にNaOH水溶液を加えたときの反応式と沈殿の色を答えよ。","answer":"2Ag⁺ + 2OH⁻ → Ag₂O↓（褐色）+ H₂O\nAg(OH)は不安定ですぐ分解してAg₂O（褐色）になる","explanation":"Ag₂OはNH₃水に溶けてジアンミン銀(I)イオンになる。"},
-  {"id":48,"category":"ag","question":"AgCl・AgBr・AgIの色をそれぞれ答えよ。","answer":"AgCl（塩化銀）：白色\nAgBr（臭化銀）：淡黄色\nAgI（ヨウ化銀）：黄色","explanation":"ハロゲン化銀の色は重くなるほど濃くなる。写真フィルムの主成分はAgBr。"},
-  {"id":49,"category":"ag","question":"ハロゲン化銀が光で分解する反応式（AgBrを例に）を書け。","answer":"2AgBr →（光）→ 2Ag + Br₂","explanation":"写真フィルム・印画紙の原理。Agが析出して黒変する。"},
-  {"id":50,"category":"ag","question":"AgClにNH₃水を加えたときの変化と反応式を答えよ。","answer":"AgCl + 2NH₃ → [Ag(NH₃)₂]⁺ + Cl⁻\nAgClが溶けて無色の溶液になる","explanation":"[Ag(NH₃)₂]⁺はジアンミン銀(I)イオン（無色・直線形）。"},
-  {"id":51,"category":"ag","question":"AgBrとAgIはNH₃水に溶けるか。","answer":"AgBr：ほとんど溶けない\nAgI：溶けない","explanation":"ハロゲン原子が重くなるほどNH₃水への溶解性が低下（AgCl > AgBr >> AgI）。"},
-  {"id":52,"category":"ag","question":"Ag⁺とH₂Sの反応式と沈殿の色を答えよ。","answer":"2Ag⁺ + S²⁻ → Ag₂S↓（黒色沈殿）","explanation":"Ag₂Sは黒色で難溶性。銀製品が黒ずむのはAg₂S形成のため。"},
-  {"id":53,"category":"ag","question":"Ag⁺にCl⁻を加えたときの反応式と沈殿の色を答えよ。","answer":"Ag⁺ + Cl⁻ → AgCl↓（白色沈殿）","explanation":"Cl⁻の検出に使われる。AgClはNH₃水に溶ける。"},
-  {"id":54,"category":"ag","question":"銀Agの化合物について、希塩酸・希硫酸・希硝酸・NaOH水溶液を加えたときの反応をまとめよ。","answer":"希塩酸：AgCl↓（白色）が生じる\n希硫酸：反応しない\n希硝酸：3Ag + 4HNO₃(希) → 3AgNO₃ + 2NO↑ + 2H₂O\nNaOH水溶液：Ag₂O↓（褐色）が生じる","explanation":"Agは希塩酸・希硫酸には溶けないが、硝酸には溶ける。NaOH添加でAg(OH)はすぐ分解してAg₂Oになる。"},
-
-  // ===== 亜鉛 Zn（image2：p.252-253） =====
-  {"id":55,"category":"zn","question":"亜鉛Znの族・密度・融点・酸化数・特徴を答えよ。","answer":"第12族。密度：7.1 g/cm³、融点：420℃\n酸化数：+2（Zn²⁺）\n青白色の光沢をもつ両性金属","explanation":"酸にもNaOHにも溶ける。"},
-  {"id":56,"category":"zn","question":"ZnとHClの反応式を書け。","answer":"Zn + 2HCl → ZnCl₂ + H₂↑","explanation":"亜鉛は酸に溶けてH₂を発生する（両性金属の酸側）。"},
-  {"id":57,"category":"zn","question":"ZnとNaOH水溶液の反応式を書け。","answer":"Zn + 2NaOH + 2H₂O → Na₂[Zn(OH)₄] + H₂↑","explanation":"亜鉛は塩基にも溶けてH₂を発生する（両性金属の塩基側）。"},
-  {"id":58,"category":"zn","question":"Zn²⁺水溶液に少量のNaOH水溶液を加えたときの反応式と沈殿の色を答えよ。","answer":"Zn²⁺ + 2OH⁻ → Zn(OH)₂↓（白色沈殿）","explanation":"白色沈殿のZn(OH)₂が生じる。"},
-  {"id":59,"category":"zn","question":"Zn(OH)₂に過剰なNaOH水溶液を加えたときの変化と反応式を答えよ。","answer":"Zn(OH)₂ + 2OH⁻ → [Zn(OH)₄]²⁻\n白色沈殿が溶けて無色溶液になる（両性水酸化物）","explanation":"[Zn(OH)₄]²⁻（テトラヒドロキシド亜鉛(II)酸イオン）が生成する。"},
-  {"id":60,"category":"zn","question":"Zn(OH)₂に過剰なNH₃水を加えたときの変化と反応式を答えよ。","answer":"Zn(OH)₂ + 4NH₃ → [Zn(NH₃)₄]²⁺ + 2OH⁻\n白色沈殿が溶けて無色溶液（テトラアンミン亜鉛(II)イオン）が生成","explanation":"[Zn(NH₃)₄]²⁺は無色・正四面体形。"},
-  {"id":61,"category":"zn","question":"ZnOの両性を示す反応式を2つ書け。","answer":"酸：ZnO + 2HCl → ZnCl₂ + H₂O\n塩基：ZnO + 2NaOH + H₂O → Na₂[Zn(OH)₄]","explanation":"ZnOは白色の両性酸化物。亜鉛華（日焼け止め・白色顔料）として使われる。"},
-  {"id":62,"category":"zn","question":"Zn²⁺水溶液に硫化水素H₂Sを通じたときの沈殿の色と化学式を答えよ。","answer":"ZnS↓（白色沈殿）\n※中性〜塩基性条件でのみ沈殿（酸性では沈殿しない）","explanation":"系統分析第4族で分離するイオン。"},
-
-  // ===== クロム Cr（image6：p.254-255） =====
-  {"id":63,"category":"cr","question":"クロムCrの族・密度・融点・酸化数の特徴を答えよ。","answer":"第6族。密度：7.2 g/cm³、融点：1860℃\n主な酸化数：+3（Cr³⁺）と+6（CrO₄²⁻・Cr₂O₇²⁻）","explanation":"ステンレス鋼（Fe-Cr-Ni）の成分。不動態を形成して耐食性をもつ。"},
-  {"id":64,"category":"cr","question":"クロム酸カリウム K₂CrO₄ の色を答えよ。","answer":"黄色（結晶・水溶液ともに黄色）\nCrO₄²⁻（クロム酸イオン）は黄色","explanation":"塩基性溶液中で安定。"},
-  {"id":65,"category":"cr","question":"ニクロム酸カリウム K₂Cr₂O₇ の色を答えよ。","answer":"橙赤色（結晶・水溶液ともに橙赤色）\nCr₂O₇²⁻（ニクロム酸イオン）は橙赤色","explanation":"酸性溶液中で安定。強い酸化剤。"},
-  {"id":66,"category":"cr","question":"CrO₄²⁻⇌Cr₂O₇²⁻の平衡式と、酸・塩基を加えたときの色変化を答えよ。","answer":"2CrO₄²⁻ + 2H⁺ ⇌ Cr₂O₇²⁻ + H₂O\n酸を加える→橙赤色（Cr₂O₇²⁻）\n塩基を加える→黄色（CrO₄²⁻）","explanation":"pHによって色が変わる。"},
-  {"id":67,"category":"cr","question":"CrO₄²⁻にBa²⁺を加えたときの反応式と沈殿の色を答えよ。","answer":"Ba²⁺ + CrO₄²⁻ → BaCrO₄↓（黄色沈殿）","explanation":"BaCrO₄は黄色の難溶性塩。"},
-  {"id":68,"category":"cr","question":"CrO₄²⁻にAg⁺を加えたときの反応式と沈殿の色を答えよ。","answer":"2Ag⁺ + CrO₄²⁻ → Ag₂CrO₄↓（赤褐色沈殿）","explanation":"Ag₂CrO₄は赤褐色の難溶性塩。"},
-  {"id":69,"category":"cr","question":"Cr³⁺水溶液の色と、NaOH水溶液（少量）を加えたときの沈殿の色を答えよ。","answer":"Cr³⁺水溶液：暗緑色\nCr(OH)₃↓：灰緑色沈殿\nCr³⁺ + 3OH⁻ → Cr(OH)₃↓","explanation":"Cr(OH)₃は両性水酸化物。"},
-  {"id":70,"category":"cr","question":"Cr(OH)₃に過剰なNaOH水溶液を加えたときの変化と反応式を答えよ。","answer":"Cr(OH)₃ + OH⁻ → [Cr(OH)₄]⁻\n溶けて（緑色の）溶液になる（両性水酸化物）","explanation":"Cr(OH)₃はAl(OH)₃・Zn(OH)₂と同様に両性水酸化物。"},
-  {"id":71,"category":"cr","question":"Cr₂O₇²⁻が酸性溶液中で酸化剤として働くときの半反応式を書け。","answer":"Cr₂O₇²⁻ + 14H⁺ + 6e⁻ → 2Cr³⁺ + 7H₂O","explanation":"Crの酸化数が+6→+3に変化。橙赤色→暗緑色に変化。"},
-  {"id":72,"category":"cr","question":"Pb²⁺にCrO₄²⁻を加えたときの反応式と沈殿の色を答えよ。","answer":"Pb²⁺ + CrO₄²⁻ → PbCrO₄↓（黄色沈殿）","explanation":"PbCrO₄は黄色。系統分析でPb²⁺の確認に使う。"},
-
-  // ===== マンガン Mn（image6：p.254-255） =====
-  {"id":73,"category":"mn","question":"マンガンMnの族・密度・融点・代表的な酸化数を3つ答えよ。","answer":"第7族。密度：7.4 g/cm³、融点：1244℃\n酸化数：+2（Mn²⁺）・+4（MnO₂）・+7（MnO₄⁻）","explanation":"KMnO₄（過マンガン酸カリウム）が最重要化合物。"},
-  {"id":74,"category":"mn","question":"Mn²⁺水溶液の色を答えよ。","answer":"淡桃色（薄いピンク色）","explanation":"MnSO₄水溶液などは淡桃色。"},
-  {"id":75,"category":"mn","question":"KMnO₄（過マンガン酸カリウム）の色を答えよ。","answer":"黒紫色の結晶。水溶液は赤紫色（濃紫色）。","explanation":"強い酸化力をもつ。"},
-  {"id":76,"category":"mn","question":"KMnO₄が酸性溶液中で酸化剤として働くときの半反応式を書け。変化する色も答えよ。","answer":"MnO₄⁻ + 8H⁺ + 5e⁻ → Mn²⁺ + 4H₂O\n赤紫色→ほぼ無色（淡桃色）に変化","explanation":"Mnの酸化数が+7→+2に変化。5電子酸化剤。"},
-  {"id":77,"category":"mn","question":"KMnO₄の塩基性〜中性条件での還元生成物と色を答えよ。","answer":"MnO₂（二酸化マンガン、黒色沈殿）\nMnO₄⁻ + 2H₂O + 3e⁻ → MnO₂↓ + 4OH⁻","explanation":"酸化数+7→+4に変化。"},
-  {"id":78,"category":"mn","question":"MnO₂の色と代表的な用途2つを答えよ。","answer":"色：黒色固体\n用途①：H₂O₂の分解触媒\n用途②：マンガン乾電池の正極材料","explanation":"2H₂O₂→2H₂O+O₂↑（MnO₂触媒）。乾電池では正極にMnO₂を使用。"},
-  {"id":79,"category":"mn","question":"Mn²⁺水溶液にH₂Sを通じたときの沈殿の色と化学式を答えよ。","answer":"MnS↓（淡赤色沈殿）\n※中性〜塩基性条件でのみ沈殿","explanation":"MnSは淡赤色（肌色）。酸性では沈殿しない（系統分析第4族）。"},
-  {"id":80,"category":"mn","question":"マンガン乾電池の正極・負極・電解質を答えよ。","answer":"正極：MnO₂・炭素棒\n負極：亜鉛Zn（亜鉛缶）\n電解質：塩化亜鉛ZnCl₂・塩化アンモニウムNH₄Clの混合物","explanation":"MnO₂が正極材料。Znが負極材料。"},
-
-  // ===== その他の遷移金属（image7：p.256-257、image8：p.240-241） =====
-  {"id":81,"category":"other","question":"コバルトCoとニッケルNiの族・Co²⁺・Ni²⁺水溶液の色を答えよ。","answer":"Co：第9族、密度8.9 g/cm³、融点1495℃\nNi：第10族、密度8.9 g/cm³、融点1453℃\nCo²⁺：淡赤色　Ni²⁺：緑色","explanation":"Co・Ni・Feはいずれも強磁性をもつ遷移金属。"},
-  {"id":82,"category":"other","question":"貴金属の説明と代表的な6種を答えよ。","answer":"第5・第6周期の第8〜10族金属。イオン化傾向が小さく化学的に安定。希少で高価。\n代表：Ru（ルテニウム）・Rh（ロジウム）・Pd（パラジウム）・Os（オスミウム）・Ir（イリジウム）・Pt（白金）","explanation":"これにAg・Auを加えることもある。"},
-  {"id":83,"category":"other","question":"白金Ptの特徴と用途を答えよ。","answer":"銀白色の金属。密度21.5 g/cm³、融点1772℃。\n用途：装飾品、三元触媒の触媒、電極材料、実験器具\n王水（濃HCl：濃HNO₃＝3：1）に溶ける","explanation":"化学的に非常に安定。酸には溶けにくいが王水には溶ける。"},
-  {"id":84,"category":"other","question":"金Auの特徴と用途を答えよ。","answer":"密度19.3 g/cm³、融点1064℃。酸化数+1・+3。\n用途：装飾品、電子部品、食料品（金箔）\n王水（濃HCl：濃HNO₃＝3：1）にのみ溶ける","explanation":"ほとんどの酸・塩基に溶けないが、王水にのみ溶ける。"},
-  {"id":85,"category":"other","question":"王水の組成（体積比）と用途を答えよ。","answer":"組成：濃塩酸：濃硝酸 ＝ 3：1（体積比）\n用途：AuやPtを溶かす","explanation":"通常の酸に溶けない貴金属を溶かすための特殊な混合酸。"},
-  {"id":86,"category":"other","question":"タングステンWの族・融点・密度と主な用途2つを答えよ。","answer":"第6族。融点：3410℃（金属中最高）、密度：19.3 g/cm³\n用途①：白熱電球のフィラメント\n用途②：炭化タングステム（WC）—切削工具（超硬合金）","explanation":"高融点を活かした用途。"},
-  {"id":87,"category":"other","question":"水銀Hgの特徴と用途を答えよ。","answer":"常温で液体の唯一の金属。融点：−38℃、密度：13.5 g/cm³\nアマルガム（他の金属との合金）をつくる","explanation":"毒性が強く環境規制の対象（水俣病の原因物質）。"},
-  {"id":88,"category":"other","question":"アマルガムとは何か。","answer":"水銀（Hg）と他の金属が混ざった合金。\n例：スズとのアマルガム、歯科用アマルガム（Hg-Ag-Cu-Sn合金）など","explanation":"Hgは常温液体なので、他の金属を溶かして合金をつくる。"},
-  {"id":89,"category":"other","question":"ニッケルNiの特徴と主な用途を答えよ。","answer":"銀白色。強磁性をもつ。耐食性が高い。\n用途：ニッケル水素電池（電極）、ステンレス鋼（Fe-Cr-Ni）、白銅（Cu-Ni合金）","explanation":"白銅（Cu-Ni合金）は100円・50円硬貨の材料。"},
-  {"id":90,"category":"other","question":"チタンTiの族・密度・融点と特徴・用途を答えよ。","answer":"第4族。密度：4.5 g/cm³、融点：1660℃\n特徴：軽量・高強度・高耐食性（不動態形成）\n用途：航空機・医療器具・形状記憶合金","explanation":"「夢の金属」と呼ばれる。"},
-
-  // ===== 合金（image1：p.258-259、image8：p.240-241） =====
-  {"id":91,"category":"ion","question":"合金の一般的な特徴を3つ答えよ。","answer":"① 純金属より硬くなることが多い\n② 融点が純金属より低くなることが多い\n③ 電気伝導性・さびにくさが変わる","explanation":"合金は金属に他の金属や非金属を混ぜることで性質を改善した材料。"},
-  {"id":92,"category":"ion","question":"ステンレス鋼・ニクロム・黄銅・青銅・白銅・ジュラルミン・はんだ・形状記憶合金・超硬合金の組成をまとめよ。","answer":"ステンレス：Fe-Cr-Ni\nニクロム：Ni-Cr（電熱線）\n黄銅（真鍮）：Cu-Zn\n青銅（ブロンズ）：Cu-Sn\n白銅：Cu-Ni\nジュラルミン：Al-Cu-Mg-Mn（航空機）\nはんだ：Sn-Pb（電子工作）\n形状記憶合金：Ni-Ti\n超硬合金：WC-Co（切削工具）","explanation":"合金の名称・組成・用途をセットで覚える。"},
-  {"id":93,"category":"ion","question":"ステンレス鋼の主成分と耐食性をもつ理由を答えよ。","answer":"主成分：Fe-Cr-Ni合金\n理由：Crが不動態を形成し表面を保護するから","explanation":"代表的な組成はFe 70%・Cr 18%・Ni 8%程度（SUS304など）。"},
-
-  // ===== 金属イオン分析（image5・image12・image13：p.260-265） =====
-  {"id":94,"category":"ion","question":"金属イオンの系統分析の流れ（第1〜第6族の操作と分離されるイオン）をまとめよ。","answer":"第1族：希塩酸→Ag⁺(AgCl白)、Pb²⁺(PbCl₂白)\n第2族：酸性+H₂S→Cu²⁺(CuS黒)、Pb²⁺(PbS黒)、Cd²⁺(CdS黄)\n第3族：NH₃水→Fe³⁺(Fe(OH)₃赤褐)、Al³⁺(Al(OH)₃白)\n第4族：中性+H₂S→Zn²⁺(ZnS白)、Mn²⁺(MnS淡赤)\n第5族：(NH₄)₂CO₃→Ca²⁺(CaCO₃白)、Ba²⁺(BaCO₃白)\n第6族（残留）：Na⁺、K⁺→炎色反応で確認","explanation":"各族の操作条件と沈殿イオンを一覧で覚える。"},
-  {"id":95,"category":"ion","question":"系統分析第1族：Ag⁺とPb²⁺をどうやって分離するか。","answer":"希HClで両方をAgCl↓・PbCl₂↓として沈殿させる。\n熱水を加えるとPbCl₂のみ溶け、AgClは残る（これで分離）。","explanation":"AgClはNH₃水に溶ける。"},
-  {"id":96,"category":"ion","question":"系統分析でPb²⁺の確認に用いる試薬と反応を答えよ。","answer":"K₂CrO₄水溶液を加える。\nPb²⁺ + CrO₄²⁻ → PbCrO₄↓（黄色沈殿）で確認","explanation":"PbCl₂は熱水に溶け、その後K₂CrO₄を加えてPb²⁺を確認する。"},
-  {"id":97,"category":"ion","question":"各金属イオンの水溶液の色をまとめよ。（Fe²⁺・Fe³⁺・Cu²⁺・Mn²⁺・Cr³⁺・Co²⁺・Ni²⁺）","answer":"Fe²⁺：淡緑色\nFe³⁺：黄褐色\nCu²⁺：青色\nMn²⁺：淡桃色\nCr³⁺：暗緑色\nCo²⁺：淡赤色\nNi²⁺：緑色","explanation":"水溶液中で色をもたない（無色）イオンの例：Ag⁺・Zn²⁺・Al³⁺・Ca²⁺・Ba²⁺・Na⁺・K⁺・Pb²⁺など"},
-  {"id":98,"category":"ion","question":"各金属イオンに希塩酸（HCl）を加えたときの反応をまとめよ。（Ag⁺・Pb²⁺・Cu²⁺）","answer":"Ag⁺：AgCl↓（白色沈殿）\nPb²⁺：PbCl₂↓（白色沈殿）\nCu²⁺：沈殿を生じない","explanation":"AgCl・PbCl₂は難溶。PbCl₂は熱水に溶ける（AgClは溶けない）。"},
-  {"id":99,"category":"ion","question":"各金属イオンにH₂Sを通じたときの沈殿の色をまとめよ。（CuS・PbS・FeS・Ag₂S・CdS・ZnS・MnS）","answer":"CuS：黒色　PbS：黒色　FeS：黒色\nAg₂S：黒色\nCdS：黄色\nZnS：白色\nMnS：淡赤色","explanation":"黒色以外の例外：CdS黄色、ZnS白色、MnS淡赤色をしっかり覚える。"},
-  {"id":100,"category":"ion","question":"各金属イオンにNaOH水溶液を加えたときの水酸化物の色をまとめよ。（Ag⁺・Pb²⁺・Cu²⁺・Fe²⁺・Fe³⁺・Zn²⁺・Al³⁺）","answer":"Ag⁺：Ag₂O↓（褐色）\nPb²⁺：Pb(OH)₂↓（白色、過剰NaOHで溶解）\nCu²⁺：Cu(OH)₂↓（青白色）\nFe²⁺：Fe(OH)₂↓（緑白色）\nFe³⁺：Fe(OH)₃↓（赤褐色）\nZn²⁺：Zn(OH)₂↓（白色、過剰NaOHで溶解）\nAl³⁺：Al(OH)₃↓（白色、過剰NaOHで溶解）","explanation":"Pb(OH)₂・Zn(OH)₂・Al(OH)₃は両性水酸化物。"},
-  {"id":101,"category":"ion","question":"過剰NH₃水で錯イオンをつくり溶けるイオンを答えよ。錯イオンの色も答えよ。","answer":"Cu²⁺ → [Cu(NH₃)₄]²⁺（深青色）\nAg⁺ → [Ag(NH₃)₂]⁺（無色）\nZn²⁺ → [Zn(NH₃)₄]²⁺（無色）","explanation":"Fe³⁺・Al³⁺はNH₃水（弱塩基）では溶けない。"},
-  {"id":102,"category":"ion","question":"AgCl・AgBr・AgIのうちNH₃水に溶けるのはどれか。","answer":"AgCl（白色）のみNH₃水に溶ける。\nAgBr（淡黄色）はほとんど溶けない。\nAgI（黄色）は溶けない。","explanation":"ハロゲン原子が重くなるほどNH₃水への溶解性が下がる。"},
-  {"id":103,"category":"ion","question":"Fe³⁺とFe²⁺を試薬で区別する方法を2つ答えよ。","answer":"① KSCNを加えて血赤色になればFe³⁺（Fe²⁺では血赤色にならない）\n② K₄[Fe(CN)₆]（黄血塩）を加えて濃青色沈殿が生じればFe³⁺\n　　K₃[Fe(CN)₆]（赤血塩）を加えて濃青色沈殿が生じればFe²⁺","explanation":"KSCNはFe³⁺の専用確認試薬。"},
-  {"id":104,"category":"ion","question":"炎色反応：Li・Na・K・Ca・Sr・Ba・Cuの色を答えよ。","answer":"Li：赤色\nNa：黄色\nK：紫色\nCa：橙赤色\nSr：赤色\nBa：黄緑色\nCu：青緑色","explanation":"花火などに利用される。Na黄色は微量でも鮮明に示す。"},
-  {"id":105,"category":"ion","question":"金属元素の化合物の水への溶解性まとめ（教科書p.259の表）を答えよ。","answer":"塩化物：AgCl（白）・PbCl₂（白）は難溶。他はほとんど可溶。\n硫酸塩：BaSO₄（白）は難溶。CaSO₄（白）は難溶。PbSO₄（白）は難溶。\n炭酸塩：アルカリ金属元素の炭酸塩は可溶。それ以外（CaCO₃・BaCO₃など）は難溶。\n水酸化物：アルカリ金属元素・Be以外のアルカリ土類金属元素の水酸化物は可溶。それ以外の水酸化物は難溶。","explanation":"「まとめ」の表（p.259）から、各分類の代表例ごとに溶解性を覚える。"},
-  {"id":106,"category":"ion","question":"イオン化傾向の大きい順（Li〜Au）を答えよ。","answer":"Li > K > Ca > Na > Mg > Al > Zn > Fe > Ni > Sn > Pb > (H₂) > Cu > Hg > Ag > Pt > Au","explanation":"「リッチに貸そうかな、まあ当てにすんな（ひどすぎる）」などの語呂で覚える。"}
-];
-
-const CATEGORIES={fe:{label:'Fe 鉄',cls:'badge-fe'},cu:{label:'Cu 銅',cls:'badge-cu'},ag:{label:'Ag 銀',cls:'badge-ag'},zn:{label:'Zn 亜鉛',cls:'badge-zn'},cr:{label:'Cr クロム',cls:'badge-cr'},mn:{label:'Mn マンガン',cls:'badge-mn'},other:{label:'その他遷移金属',cls:'badge-other'},ion:{label:'金属イオン分析・合金',cls:'badge-ion'}};
-const WKEY='cf2w2';
-var ALL_QUESTIONS=QUESTIONS_DATA;
-var filteredQ=[],currentIndex=0,isFlipped=false,correctCount=0,wrongCount=0,answered=new Set();
-var wrongIds=(function(){try{return new Set(JSON.parse(localStorage.getItem(WKEY)||'[]'));}catch(e){return new Set();}})();
-
-document.getElementById('total-count').textContent=QUESTIONS_DATA.length;
-
-function updateWrongBadge(){
-  var n=wrongIds.size;
-  document.getElementById('wrong-count-badge').textContent=n;
-  document.getElementById('clear-wrong-btn').style.display=n>0?'':'none';
-}
-function clearWrongList(){
-  wrongIds.clear();
-  try{localStorage.removeItem(WKEY);}catch(e){}
-  updateWrongBadge();
-  setFilter('all',document.getElementById('filter-all'));
-}
-function setFilter(cat,btn){
-  document.querySelectorAll('.filter-btn').forEach(function(b){b.classList.remove('active');});
-  btn.classList.add('active');
-  if(cat==='wrong'){filteredQ=ALL_QUESTIONS.filter(function(q){return wrongIds.has(q.id);});}
-  else if(cat==='all'){filteredQ=ALL_QUESTIONS.slice();}
-  else{filteredQ=ALL_QUESTIONS.filter(function(q){return q.category===cat;});}
-  restartAll();
-}
-function shuffleArray(arr){for(var i=arr.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=arr[i];arr[i]=arr[j];arr[j]=t;}}
-function shuffleAndReset(){shuffleArray(filteredQ);currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById('complete-screen').classList.remove('visible');document.getElementById('card-area').style.display='';document.getElementById('result-btns').classList.remove('visible');renderCard();}
-function restartAll(){currentIndex=0;isFlipped=false;correctCount=0;wrongCount=0;answered.clear();document.getElementById('complete-screen').classList.remove('visible');document.getElementById('card-area').style.display='';document.getElementById('result-btns').classList.remove('visible');renderCard();}
-function renderCard(){
-  if(currentIndex>=filteredQ.length){showComplete();return;}
-  var q=filteredQ[currentIndex],cat=CATEGORIES[q.category];
-  document.getElementById('card-num').textContent='Q '+(currentIndex+1)+' / '+filteredQ.length;
-  ['card-badge','card-badge-back'].forEach(function(id){var el=document.getElementById(id);el.className='card-badge '+cat.cls;el.textContent=cat.label;});
-  document.getElementById('card-question').textContent=q.question;
-  document.getElementById('card-answer').textContent=q.answer;
-  document.getElementById('card-explanation').textContent=q.explanation;
-  document.getElementById('flashcard').classList.remove('flipped');
-  isFlipped=false;document.getElementById('result-btns').classList.remove('visible');
-  updateStats();updateWrongBadge();
-}
-function flipCard(){isFlipped=!isFlipped;document.getElementById('flashcard').classList.toggle('flipped',isFlipped);if(isFlipped)document.getElementById('result-btns').classList.add('visible');}
-function markResult(correct){
-  if(!answered.has(currentIndex)){
-    answered.add(currentIndex);
-    var qid=filteredQ[currentIndex].id;
-    if(correct){correctCount++;wrongIds.delete(qid);}
-    else{wrongCount++;wrongIds.add(qid);}
-    try{localStorage.setItem(WKEY,JSON.stringify(Array.from(wrongIds)));}catch(e){}
-    updateWrongBadge();
+function spiralOrder(rows, cols){
+  const result = [];
+  let top=0, bottom=rows-1, left=0, right=cols-1;
+  while(top<=bottom && left<=right){
+    for(let c=left;c<=right;c++) result.push([top,c]);
+    top++;
+    for(let r=top;r<=bottom;r++) result.push([r,right]);
+    right--;
+    if(top<=bottom){ for(let c=right;c>=left;c--) result.push([bottom,c]); bottom--; }
+    if(left<=right){ for(let r=bottom;r>=top;r--) result.push([r,left]); left++; }
   }
-  nextCard();
+  return result;
 }
-function nextCard(){if(currentIndex<filteredQ.length-1){currentIndex++;renderCard();}else showComplete();}
-function prevCard(){if(currentIndex>0){currentIndex--;renderCard();}}
-function updateStats(){
-  document.getElementById('stat-total').textContent=filteredQ.length;
-  document.getElementById('stat-correct').textContent=correctCount;
-  document.getElementById('stat-wrong').textContent=wrongCount;
-  document.getElementById('stat-remain').textContent=filteredQ.length-answered.size;
-  var pct=filteredQ.length>0?Math.round((answered.size/filteredQ.length)*100):0;
-  document.getElementById('progress-fill').style.width=pct+'%';
-  document.getElementById('progress-text').textContent=answered.size+' / '+filteredQ.length;
-}
-function showComplete(){
-  document.getElementById('card-area').style.display='none';
-  document.getElementById('result-btns').classList.remove('visible');
-  var total=answered.size,pct=total>0?Math.round((correctCount/total)*100):0;
-  var emoji=pct>=90?'🏆':pct>=70?'🎉':pct>=50?'💪':'📚';
-  document.getElementById('complete-emoji').textContent=emoji;
-  document.getElementById('complete-score').textContent=correctCount+' / '+total;
-  document.getElementById('complete-sub').textContent='正答率 '+pct+'% — '+(pct>=80?'すばらしい！':pct>=60?'もう少し！':'復習しよう！');
-  document.getElementById('complete-screen').classList.add('visible');
-  updateStats();
-}
-function toggleTheme(){document.body.classList.toggle('light');document.querySelector('.theme-toggle').textContent=document.body.classList.contains('light')?'🌙':'☀️';}
+const spiral = spiralOrder(ROWS, COLS);
+const filledIdx = new Set(spiral.slice(0, PHOTO_COUNT).map(([r,c]) => r*COLS + c));
 
-// 初期化
-filteredQ=ALL_QUESTIONS.slice();
-renderCard();
-updateWrongBadge();
+function computeHoleRectMm(){
+  let minR=ROWS, maxR=-1, minC=COLS, maxC=-1;
+  for(let r=0;r<ROWS;r++) for(let c=0;c<COLS;c++){
+    const idx = r*COLS+c;
+    if(!filledIdx.has(idx)){ minR=Math.min(minR,r); maxR=Math.max(maxR,r); minC=Math.min(minC,c); maxC=Math.max(maxC,c); }
+  }
+  return {
+    x: minC*(CELL_MM+GAP_X_MM), y: minR*(CELL_MM+GAP_Y_MM),
+    w: (maxC*(CELL_MM+GAP_X_MM)+CELL_MM) - minC*(CELL_MM+GAP_X_MM),
+    h: (maxR*(CELL_MM+GAP_Y_MM)+CELL_MM) - minR*(CELL_MM+GAP_Y_MM)
+  };
+}
+const holeRectMm = computeHoleRectMm();
+
+let slots = {};
+let design = {
+  bgColor: '#fdfaf3', title: '', centerImageData: null,
+  template: {
+    photo: { x:0, y:0, w:50, h:50 },
+    frameImageData: null,
+    textBoxes: [
+      { id:'t1', kind:'name', fixedText:'', x:2, y:40, font:"'Hiragino Sans', sans-serif", size:5, color:'#ffffff', align:'left' }
+    ]
+  }
+};
+let centerImageObj = null;
+let frameImageObj = null;
+let selectedSlot = null;
+let editorName = '';
+
+// ============ クラスページ全体ビュー ============
+const canvas = document.getElementById('stage');
+const ctx = canvas.getContext('2d');
+const SCREEN_PX_PER_MM = 2;
+
+function cellRectsMm(){
+  const rects = [];
+  for(let r=0; r<ROWS; r++) for(let c=0; c<COLS; c++){
+    const idx = r*COLS + c;
+    if(!filledIdx.has(idx)) continue;
+    rects.push({ idx, x: c*(CELL_MM+GAP_X_MM), y: r*(CELL_MM+GAP_Y_MM), w: CELL_MM, h: CELL_MM });
+  }
+  return rects;
+}
+
+function resolveText(box, data){
+  if(box.kind==='name') return (data && data.name) || '';
+  if(box.kind==='sub') return (data && data.sub) || '';
+  return box.fixedText || '';
+}
+
+function drawTextBox(targetCtx, box, text, cellRect, pxPerMm){
+  if(!text) return;
+  const mm = v=>v*pxPerMm;
+  const fontPx = mm(box.size);
+  targetCtx.font = `${fontPx}px ${box.font}`;
+  const x = mm(cellRect.x + box.x), y = mm(cellRect.y + box.y);
+  const textW = targetCtx.measureText(text).width;
+  const pad = mm(1);
+  let barX = box.align==='left' ? x-pad : box.align==='right' ? x-textW-pad : x-textW/2-pad;
+  targetCtx.fillStyle = 'rgba(0,0,0,0.5)';
+  targetCtx.fillRect(barX, y-pad, textW+pad*2, fontPx+pad*2);
+  targetCtx.fillStyle = box.color || '#fff';
+  targetCtx.textAlign = box.align || 'left';
+  targetCtx.textBaseline = 'top';
+  targetCtx.fillText(text, x, y);
+  targetCtx.textAlign = 'left';
+  targetCtx.textBaseline = 'alphabetic';
+}
+
+function renderCellContent(targetCtx, cellRect, data, pxPerMm, frameImg){
+  const mm = v=>v*pxPerMm;
+  const tpl = design.template;
+  const rx = mm(cellRect.x), ry = mm(cellRect.y), rw = mm(cellRect.w), rh = mm(cellRect.h);
+
+  targetCtx.save();
+  targetCtx.beginPath();
+  targetCtx.rect(rx, ry, rw, rh);
+  targetCtx.clip();
+
+  const px = mm(cellRect.x + tpl.photo.x), py = mm(cellRect.y + tpl.photo.y);
+  const pw = mm(tpl.photo.w), ph = mm(tpl.photo.h);
+  if(data && data.img){
+    const img = data.img;
+    const scale = Math.max(pw/img.width, ph/img.height);
+    const dw = img.width*scale, dh = img.height*scale;
+    targetCtx.save();
+    targetCtx.beginPath();
+    targetCtx.rect(px, py, pw, ph);
+    targetCtx.clip();
+    targetCtx.drawImage(img, px+(pw-dw)/2, py+(ph-dh)/2, dw, dh);
+    targetCtx.restore();
+  } else {
+    targetCtx.fillStyle = '#efece4';
+    targetCtx.fillRect(px, py, pw, ph);
+  }
+
+  if(frameImg){
+    targetCtx.drawImage(frameImg, rx, ry, rw, rh);
+  }
+
+  design.template.textBoxes.forEach(box=>{
+    drawTextBox(targetCtx, box, resolveText(box, data), cellRect, pxPerMm);
+  });
+
+  targetCtx.restore();
+}
+
+function renderToContext(targetCtx, pxPerMm){
+  const mm = v => v * pxPerMm;
+  targetCtx.fillStyle = design.bgColor || '#fdfaf3';
+  targetCtx.fillRect(0,0,mm(PAGE_W_MM),mm(PAGE_H_MM));
+
+  cellRectsMm().forEach(rect=>{
+    renderCellContent(targetCtx, rect, slots[rect.idx], pxPerMm, frameImageObj);
+    targetCtx.lineWidth = (selectedSlot===rect.idx) ? mm(1.5) : mm(0.5);
+    targetCtx.strokeStyle = (selectedSlot===rect.idx) ? '#2b2b28' : '#c9c4b8';
+    targetCtx.strokeRect(mm(rect.x), mm(rect.y), mm(rect.w), mm(rect.h));
+  });
+
+  const hx = mm(holeRectMm.x), hy = mm(holeRectMm.y), hw = mm(holeRectMm.w), hh = mm(holeRectMm.h);
+  if(centerImageObj){
+    const scale = Math.min(hw/centerImageObj.width, hh/centerImageObj.height) * 0.9;
+    const dw = centerImageObj.width*scale, dh = centerImageObj.height*scale;
+    targetCtx.drawImage(centerImageObj, hx+(hw-dw)/2, hy+(hh-dh)/2, dw, dh);
+  } else if(design.title){
+    targetCtx.fillStyle = '#2b2b28';
+    targetCtx.font = `bold ${mm(16)}px "Hiragino Sans", sans-serif`;
+    targetCtx.textAlign = 'center';
+    targetCtx.textBaseline = 'middle';
+    targetCtx.fillText(design.title, hx+hw/2, hy+hh/2);
+    targetCtx.textAlign = 'left';
+    targetCtx.textBaseline = 'alphabetic';
+  }
+}
+
+function draw(){
+  canvas.width = PAGE_W_MM * SCREEN_PX_PER_MM;
+  canvas.height = PAGE_H_MM * SCREEN_PX_PER_MM;
+  renderToContext(ctx, SCREEN_PX_PER_MM);
+}
+
+canvas.addEventListener('click', (e)=>{
+  const rect = canvas.getBoundingClientRect();
+  const scaleX = canvas.width / rect.width, scaleY = canvas.height / rect.height;
+  const x = (e.clientX - rect.left) * scaleX / SCREEN_PX_PER_MM;
+  const y = (e.clientY - rect.top) * scaleY / SCREEN_PX_PER_MM;
+  const hit = cellRectsMm().find(r => x>=r.x && x<=r.x+r.w && y>=r.y && y<=r.y+r.h);
+  if(!hit) return;
+  selectedSlot = hit.idx;
+  renderSlotEditor();
+  draw();
+});
+
+function renderSlotEditor(){
+  const panel = document.getElementById('slotEditor');
+  if(selectedSlot===null){
+    panel.className = 'slot-editor empty';
+    panel.textContent = '外周のマスをクリックすると、ここで編集できます。';
+    return;
+  }
+  const data = slots[selectedSlot] || {};
+  const hasSubField = design.template.textBoxes.some(b=>b.kind==='sub');
+  panel.className = 'slot-editor';
+  panel.innerHTML = `
+    <h2 style="margin-top:0">マス #${selectedSlot+1}</h2>
+    <div class="field"><label>名前</label><input type="text" id="nameInput" value="${data.name || ''}" maxlength="12"></div>
+    ${hasSubField ? `<div class="field"><label>サブテキスト</label><input type="text" id="subInput" value="${data.sub || ''}" maxlength="16"></div>` : ''}
+    <div class="row-btns">
+      <label class="upload-btn">写真を選択<input type="file" id="photoInput" accept="image/*"></label>
+      <button class="action danger" id="removePhotoBtn">写真を削除</button>
+    </div>
+    ${data.editedBy ? `<div style="font-size:11px;color:var(--sub);margin-top:8px">最終編集: ${data.editedBy}</div>` : ''}
+  `;
+  document.getElementById('nameInput').addEventListener('input', (e)=>{
+    slots[selectedSlot] = slots[selectedSlot] || {};
+    slots[selectedSlot].name = e.target.value;
+    slots[selectedSlot].editedBy = editorName || '(名前未設定)';
+    draw(); saveSlots();
+  });
+  const subEl = document.getElementById('subInput');
+  if(subEl) subEl.addEventListener('input', (e)=>{
+    slots[selectedSlot] = slots[selectedSlot] || {};
+    slots[selectedSlot].sub = e.target.value;
+    slots[selectedSlot].editedBy = editorName || '(名前未設定)';
+    draw(); saveSlots();
+  });
+  document.getElementById('photoInput').addEventListener('change', (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    resizeImage(file, 500, (dataUrl)=>{
+      const img = new Image();
+      img.onload = ()=>{
+        slots[selectedSlot] = slots[selectedSlot] || {};
+        slots[selectedSlot].imgData = dataUrl;
+        slots[selectedSlot].img = img;
+        slots[selectedSlot].editedBy = editorName || '(名前未設定)';
+        draw(); saveSlots();
+      };
+      img.src = dataUrl;
+    });
+  });
+  document.getElementById('removePhotoBtn').addEventListener('click', ()=>{
+    if(slots[selectedSlot]){ slots[selectedSlot].imgData = null; slots[selectedSlot].img = null; slots[selectedSlot].editedBy = editorName || '(名前未設定)'; }
+    draw(); saveSlots();
+  });
+}
+
+function resizeImage(file, maxSize, cb){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    const img = new Image();
+    img.onload = ()=>{
+      const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+      const w = img.width*scale, h = img.height*scale;
+      const c = document.createElement('canvas');
+      c.width = w; c.height = h;
+      c.getContext('2d').drawImage(img, 0, 0, w, h);
+      cb(c.toDataURL('image/jpeg', 0.85));
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+document.getElementById('editorName').addEventListener('input', (e)=>{ editorName = e.target.value; });
+document.getElementById('titleInput').addEventListener('input', (e)=>{ design.title = e.target.value; draw(); saveDesign(); });
+document.getElementById('bgColorInput').addEventListener('input', (e)=>{ design.bgColor = e.target.value; draw(); saveDesign(); });
+document.getElementById('centerImageInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  resizeImage(file, 900, (dataUrl)=>{
+    const img = new Image();
+    img.onload = ()=>{ design.centerImageData = dataUrl; centerImageObj = img; draw(); saveDesign(); };
+    img.src = dataUrl;
+  });
+});
+document.getElementById('clearCenterImageBtn').addEventListener('click', ()=>{ design.centerImageData=null; centerImageObj=null; draw(); saveDesign(); });
+
+// ============ テンプレート編集ビュー ============
+const tplCanvas = document.getElementById('tplCanvas');
+const tplCtx = tplCanvas.getContext('2d');
+const TPL_PX_PER_MM = 8; // 50mm -> 400px
+let selectedItem = null; // {type:'photo'} or {type:'text', id}
+let dragState = null; // {mode:'move'|'resize', startX, startY, orig}
+
+function tplCellRect(){ return {x:0, y:0, w:50, h:50}; }
+
+function drawTplCanvas(){
+  tplCanvas.width = 50*TPL_PX_PER_MM;
+  tplCanvas.height = 50*TPL_PX_PER_MM;
+  tplCtx.fillStyle = '#e9e6dd';
+  tplCtx.fillRect(0,0,tplCanvas.width, tplCanvas.height);
+
+  const sampleData = { name: '山田 太郎', sub: 'サブ表示' };
+  renderCellContent(tplCtx, tplCellRect(), sampleData, TPL_PX_PER_MM, frameImageObj);
+
+  // 写真枠のハンドル表示
+  const tpl = design.template;
+  const mm = v=>v*TPL_PX_PER_MM;
+  const isPhotoSel = selectedItem && selectedItem.type==='photo';
+  tplCtx.strokeStyle = isPhotoSel ? '#4a7ba6' : 'rgba(74,123,166,0.5)';
+  tplCtx.lineWidth = isPhotoSel ? 2 : 1;
+  tplCtx.setLineDash([4,3]);
+  tplCtx.strokeRect(mm(tpl.photo.x), mm(tpl.photo.y), mm(tpl.photo.w), mm(tpl.photo.h));
+  tplCtx.setLineDash([]);
+  if(isPhotoSel){
+    tplCtx.fillStyle = '#4a7ba6';
+    tplCtx.beginPath();
+    tplCtx.arc(mm(tpl.photo.x+tpl.photo.w), mm(tpl.photo.y+tpl.photo.h), 6, 0, Math.PI*2);
+    tplCtx.fill();
+  }
+
+  // テキストボックスの選択枠
+  tpl.textBoxes.forEach(box=>{
+    const isSel = selectedItem && selectedItem.type==='text' && selectedItem.id===box.id;
+    if(isSel){
+      const text = resolveText(box, sampleData) || '(空)';
+      tplCtx.font = `${mm(box.size)}px ${box.font}`;
+      const w = tplCtx.measureText(text).width;
+      tplCtx.strokeStyle = '#c0694f';
+      tplCtx.lineWidth = 2;
+      tplCtx.strokeRect(mm(box.x)-4, mm(box.y)-4, w+8, mm(box.size)+8);
+    }
+  });
+}
+
+function hitTestTpl(x, y){
+  const tpl = design.template;
+  // テキストを先にテスト(手前にある想定)
+  for(let i=tpl.textBoxes.length-1;i>=0;i--){
+    const box = tpl.textBoxes[i];
+    const sampleData = { name:'山田 太郎', sub:'サブ表示' };
+    const text = resolveText(box, sampleData) || '(空)';
+    tplCtx.font = `${box.size*TPL_PX_PER_MM}px ${box.font}`;
+    const w = tplCtx.measureText(text).width;
+    const bx = box.x*TPL_PX_PER_MM, by = box.y*TPL_PX_PER_MM, bw = w, bh = box.size*TPL_PX_PER_MM;
+    if(x>=bx-4 && x<=bx+bw+4 && y>=by-4 && y<=by+bh+4) return {type:'text', id:box.id};
+  }
+  const px = tpl.photo.x*TPL_PX_PER_MM, py = tpl.photo.y*TPL_PX_PER_MM, pw = tpl.photo.w*TPL_PX_PER_MM, ph = tpl.photo.h*TPL_PX_PER_MM;
+  const handleDist = Math.hypot(x-(px+pw), y-(py+ph));
+  if(handleDist < 10) return {type:'photo', handle:true};
+  if(x>=px && x<=px+pw && y>=py && y<=py+ph) return {type:'photo'};
+  return null;
+}
+
+tplCanvas.addEventListener('mousedown', (e)=>{
+  const rect = tplCanvas.getBoundingClientRect();
+  const scaleX = tplCanvas.width/rect.width, scaleY = tplCanvas.height/rect.height;
+  const x = (e.clientX-rect.left)*scaleX, y = (e.clientY-rect.top)*scaleY;
+  const hit = hitTestTpl(x,y);
+  selectedItem = hit ? (hit.type==='photo' ? {type:'photo'} : {type:'text', id:hit.id}) : null;
+  if(hit){
+    dragState = {
+      mode: hit.handle ? 'resize' : 'move',
+      startXmm: x/TPL_PX_PER_MM, startYmm: y/TPL_PX_PER_MM,
+      orig: hit.type==='photo' ? {...design.template.photo} : {...design.template.textBoxes.find(b=>b.id===hit.id)}
+    };
+  }
+  renderPropPanel();
+  renderLayerList();
+  drawTplCanvas();
+});
+tplCanvas.addEventListener('mousemove', (e)=>{
+  if(!dragState || !selectedItem) return;
+  const rect = tplCanvas.getBoundingClientRect();
+  const scaleX = tplCanvas.width/rect.width, scaleY = tplCanvas.height/rect.height;
+  const x = (e.clientX-rect.left)*scaleX, y = (e.clientY-rect.top)*scaleY;
+  const xmm = x/TPL_PX_PER_MM, ymm = y/TPL_PX_PER_MM;
+  const dx = xmm - dragState.startXmm, dy = ymm - dragState.startYmm;
+
+  if(selectedItem.type==='photo'){
+    const tpl = design.template;
+    if(dragState.mode==='resize'){
+      tpl.photo.w = Math.max(5, Math.min(50, dragState.orig.w + dx));
+      tpl.photo.h = Math.max(5, Math.min(50, dragState.orig.h + dy));
+    } else {
+      tpl.photo.x = Math.max(0, Math.min(50-tpl.photo.w, dragState.orig.x + dx));
+      tpl.photo.y = Math.max(0, Math.min(50-tpl.photo.h, dragState.orig.y + dy));
+    }
+  } else {
+    const box = design.template.textBoxes.find(b=>b.id===selectedItem.id);
+    if(box){
+      box.x = Math.max(0, Math.min(50, dragState.orig.x + dx));
+      box.y = Math.max(0, Math.min(50, dragState.orig.y + dy));
+    }
+  }
+  drawTplCanvas();
+});
+window.addEventListener('mouseup', ()=>{
+  if(dragState){ dragState = null; saveDesign(); }
+});
+
+function renderLayerList(){
+  const list = document.getElementById('layerList');
+  const tpl = design.template;
+  let html = `<div class="layer-item ${selectedItem && selectedItem.type==='photo' ? 'selected':''}" data-type="photo">写真</div>`;
+  tpl.textBoxes.forEach(box=>{
+    const label = box.kind==='name' ? 'テキスト:名前' : box.kind==='sub' ? 'テキスト:サブ' : `テキスト:「${box.fixedText||'(空)'}」`;
+    html += `<div class="layer-item ${selectedItem && selectedItem.type==='text' && selectedItem.id===box.id ? 'selected':''}" data-type="text" data-id="${box.id}">
+      <span>${label}</span><button data-del="${box.id}">削除</button>
+    </div>`;
+  });
+  list.innerHTML = html;
+  list.querySelectorAll('.layer-item').forEach(el=>{
+    el.addEventListener('click', (e)=>{
+      if(e.target.dataset.del) return;
+      selectedItem = el.dataset.type==='photo' ? {type:'photo'} : {type:'text', id:el.dataset.id};
+      renderPropPanel(); renderLayerList(); drawTplCanvas();
+    });
+  });
+  list.querySelectorAll('button[data-del]').forEach(btn=>{
+    btn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      design.template.textBoxes = design.template.textBoxes.filter(b=>b.id!==btn.dataset.del);
+      if(selectedItem && selectedItem.id===btn.dataset.del) selectedItem = null;
+      renderPropPanel(); renderLayerList(); drawTplCanvas(); saveDesign();
+    });
+  });
+}
+
+function renderPropPanel(){
+  const panel = document.getElementById('propPanel');
+  if(!selectedItem){ panel.innerHTML = `<p class="rangeval">要素をクリックすると、ここでスタイルを編集できます。</p>`; return; }
+
+  if(selectedItem.type==='photo'){
+    panel.innerHTML = `<h3 style="margin-top:0">写真</h3><p class="rangeval">ドラッグで移動、右下の●で大きさを変更できます。</p>`;
+    return;
+  }
+
+  const box = design.template.textBoxes.find(b=>b.id===selectedItem.id);
+  if(!box) return;
+  panel.innerHTML = `
+    <h3 style="margin-top:0">テキストボックス</h3>
+    <div class="field"><label>内容</label>
+      <select id="propKind">
+        <option value="name" ${box.kind==='name'?'selected':''}>名前(各マスで入力)</option>
+        <option value="sub" ${box.kind==='sub'?'selected':''}>サブテキスト(各マスで入力)</option>
+        <option value="fixed" ${box.kind==='fixed'?'selected':''}>固定文字(全マス共通)</option>
+      </select>
+    </div>
+    <div class="field" id="fixedTextField" style="${box.kind==='fixed'?'':'display:none;'}">
+      <label>固定文字の内容</label>
+      <input type="text" id="propFixedText" value="${box.fixedText||''}" maxlength="20">
+    </div>
+    <div class="field"><label>フォント</label>
+      <select id="propFont">
+        <option value="'Hiragino Sans', sans-serif" ${box.font.includes('Hiragino Sans')?'selected':''}>ゴシック体</option>
+        <option value="'Hiragino Mincho ProN', serif" ${box.font.includes('Mincho')?'selected':''}>明朝体</option>
+        <option value="cursive" ${box.font==='cursive'?'selected':''}>手書き風</option>
+      </select>
+    </div>
+    <div class="field"><label>サイズ <span class="rangeval">${box.size}mm</span></label>
+      <input type="range" id="propSize" min="2" max="12" step="0.5" value="${box.size}">
+    </div>
+    <div class="field"><label>色</label><input type="color" id="propColor" value="${box.color}"></div>
+    <div class="field"><label>文字揃え</label>
+      <select id="propAlign">
+        <option value="left" ${box.align==='left'?'selected':''}>左揃え</option>
+        <option value="center" ${box.align==='center'?'selected':''}>中央揃え</option>
+        <option value="right" ${box.align==='right'?'selected':''}>右揃え</option>
+      </select>
+    </div>
+  `;
+  document.getElementById('propKind').addEventListener('change', (e)=>{
+    box.kind = e.target.value;
+    document.getElementById('fixedTextField').style.display = box.kind==='fixed' ? '' : 'none';
+    renderLayerList(); drawTplCanvas(); saveDesign();
+  });
+  const ft = document.getElementById('propFixedText');
+  if(ft) ft.addEventListener('input', (e)=>{ box.fixedText = e.target.value; renderLayerList(); drawTplCanvas(); saveDesign(); });
+  document.getElementById('propFont').addEventListener('change', (e)=>{ box.font = e.target.value; drawTplCanvas(); saveDesign(); });
+  document.getElementById('propSize').addEventListener('input', (e)=>{ box.size = parseFloat(e.target.value); renderPropPanel(); drawTplCanvas(); saveDesign(); });
+  document.getElementById('propColor').addEventListener('input', (e)=>{ box.color = e.target.value; drawTplCanvas(); saveDesign(); });
+  document.getElementById('propAlign').addEventListener('change', (e)=>{ box.align = e.target.value; drawTplCanvas(); saveDesign(); });
+}
+
+document.getElementById('addTextBtn').addEventListener('click', ()=>{
+  const id = 't' + Date.now();
+  design.template.textBoxes.push({ id, kind:'fixed', fixedText:'テキスト', x:5, y:5, font:"'Hiragino Sans', sans-serif", size:4, color:'#ffffff', align:'left' });
+  selectedItem = {type:'text', id};
+  renderPropPanel(); renderLayerList(); drawTplCanvas(); saveDesign();
+});
+
+document.getElementById('frameImageInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(!file) return;
+  resizeImage(file, 600, (dataUrl)=>{
+    const img = new Image();
+    img.onload = ()=>{ design.template.frameImageData = dataUrl; frameImageObj = img; drawTplCanvas(); draw(); saveDesign(); };
+    img.src = dataUrl;
+  });
+});
+document.getElementById('clearFrameImageBtn').addEventListener('click', ()=>{
+  design.template.frameImageData = null; frameImageObj = null; drawTplCanvas(); draw(); saveDesign();
+});
+
+// ============ タブ切り替え ============
+document.querySelectorAll('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    tab.classList.add('active');
+    document.getElementById(tab.dataset.view).classList.add('active');
+    if(tab.dataset.view==='tplView'){ renderLayerList(); renderPropPanel(); drawTplCanvas(); }
+    else { draw(); }
+  });
+});
+
+// ============ 同期 ============
+async function saveSlots(){
+  try{
+    const plain = {};
+    Object.keys(slots).forEach(k=>{
+      plain[k] = { name: slots[k].name||'', sub: slots[k].sub||'', imgData: slots[k].imgData||null, editedBy: slots[k].editedBy||'' };
+    });
+    await window.storage.set('gradlayout:slots', JSON.stringify(plain), true);
+    document.getElementById('statusText').textContent = '保存しました(自動同期中)';
+  }catch(err){ document.getElementById('statusText').textContent = '保存に失敗しました'; }
+}
+async function saveDesign(){
+  try{ await window.storage.set('gradlayout:design', JSON.stringify(design), true); }catch(err){}
+}
+
+async function loadAll(silent){
+  try{
+    const s = await window.storage.get('gradlayout:slots', true);
+    if(s && s.value){
+      const plain = JSON.parse(s.value);
+      const loaded = {};
+      const loaders = Object.keys(plain).map(k=>new Promise(resolve=>{
+        const entry = plain[k];
+        if(entry.imgData){
+          const img = new Image();
+          img.onload = ()=>{ loaded[k] = {name:entry.name, sub:entry.sub, imgData:entry.imgData, img, editedBy:entry.editedBy}; resolve(); };
+          img.src = entry.imgData;
+        } else { loaded[k] = {name:entry.name, sub:entry.sub, editedBy:entry.editedBy}; resolve(); }
+      }));
+      await Promise.all(loaders);
+      slots = loaded;
+    }
+  }catch(err){}
+
+  try{
+    const d = await window.storage.get('gradlayout:design', true);
+    if(d && d.value){
+      const loaded = JSON.parse(d.value);
+      design = Object.assign({}, design, loaded);
+      design.template = Object.assign({}, design.template, loaded.template||{});
+      document.getElementById('titleInput').value = design.title || '';
+      document.getElementById('bgColorInput').value = design.bgColor || '#fdfaf3';
+      if(design.centerImageData){
+        await new Promise(r=>{ const img=new Image(); img.onload=()=>{centerImageObj=img; r();}; img.src=design.centerImageData; });
+      } else centerImageObj = null;
+      if(design.template.frameImageData){
+        await new Promise(r=>{ const img=new Image(); img.onload=()=>{frameImageObj=img; r();}; img.src=design.template.frameImageData; });
+      } else frameImageObj = null;
+    }
+  }catch(err){}
+
+  draw();
+  if(document.getElementById('tplView').classList.contains('active')){ renderLayerList(); renderPropPanel(); drawTplCanvas(); }
+  if(!silent) renderSlotEditor();
+  document.getElementById('statusText').textContent = '自動同期中(最終取得: ' + new Date().toLocaleTimeString() + ')';
+}
+
+document.getElementById('exportPreviewBtn').addEventListener('click', ()=>{
+  const link = document.createElement('a');
+  link.download = 'class-page-preview.jpg';
+  link.href = canvas.toDataURL('image/jpeg', 0.92);
+  link.click();
+});
+document.getElementById('exportHiResBtn').addEventListener('click', ()=>{
+  const pxPerMm = 300/25.4;
+  const hiCanvas = document.createElement('canvas');
+  hiCanvas.width = Math.round(PAGE_W_MM*pxPerMm);
+  hiCanvas.height = Math.round(PAGE_H_MM*pxPerMm);
+  const hiCtx = hiCanvas.getContext('2d');
+  renderToContext(hiCtx, pxPerMm);
+  const link = document.createElement('a');
+  link.download = `class-page-300ppi-${hiCanvas.width}x${hiCanvas.height}px.png`;
+  link.href = hiCanvas.toDataURL('image/png');
+  link.click();
+});
+
+loadAll();
+setInterval(()=>loadAll(true), 4000);
 </script>
 </body>
 </html>
